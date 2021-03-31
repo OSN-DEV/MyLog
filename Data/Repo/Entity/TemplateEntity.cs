@@ -211,7 +211,43 @@ namespace MyLog.Data.Repo.Entity {
             this.Fri = data.Fri;
             this.Sat = this.Sat;
         }
-        #endregion
 
+        /// <summary>
+        /// 指定された日付の曜日をキーとしてデータを取得する
+        /// </summary>
+        /// <param name="date">日付</param>
+        /// <returns>レコードセット</returns>
+        internal Recordset SelectByWeekDay(string date) {
+            var dt = DateTime.Parse(date).DayOfWeek;
+
+            var sql = new SqlBuilder();
+            sql.AppendSql($"SELECT * FROM {TableName}");
+            switch(dt) {
+                case DayOfWeek.Sunday:
+                    sql.AppendSql($"WHERE {Cols.Sun} = 1");
+                    break;
+                case DayOfWeek.Monday:
+                    sql.AppendSql($"WHERE {Cols.Mon} = 1");
+                    break;
+                case DayOfWeek.Tuesday:
+                    sql.AppendSql($"WHERE {Cols.Tue} = 1");
+                    break;
+                case DayOfWeek.Wednesday:
+                    sql.AppendSql($"WHERE {Cols.Wed} = 1");
+                    break;
+                case DayOfWeek.Thursday:
+                    sql.AppendSql($"WHERE {Cols.Thu} = 1");
+                    break;
+                case DayOfWeek.Friday:
+                    sql.AppendSql($"WHERE {Cols.Fri} = 1");
+                    break;
+                case DayOfWeek.Saturday:
+                    sql.AppendSql($"WHERE {Cols.Sat} = 1");
+                    break;
+            }
+            sql.AppendSql($"ORDER BY {Cols.Id}");
+            return base.Database.OpenRecordset(sql);
+        }
+        #endregion
     }
 }

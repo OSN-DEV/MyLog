@@ -37,6 +37,13 @@ namespace MyLog.Component {
                     this.TextValueChanged?.Invoke(this, null);
                 }
             };
+
+            this.MouseDoubleClick += (sender, e) => {
+                if (0 == this.Text.Length) {
+                    this.Text = DateTime.Now.ToString("HHmm");
+                    this.TextValueChanged?.Invoke(this, null);
+                }
+            };
         }
         #endregion
 

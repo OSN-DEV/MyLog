@@ -81,29 +81,6 @@
         </StackPanel>
 
         <ListView Name="cData" Grid.Row="3" Padding="0" ItemsSource="{Binding TemplateData.LogList}" >
-            <ListView.Resources>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <Border Background="{TemplateBinding Background}">
-                                    <ContentPresenter />
-                                </Border>
-
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="Green" />
-                                    </Trigger>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="Red" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.Resources>
-
             <ListView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource listBoxItemStyle}" TargetType="ListBoxItem" >
                     <Setter Property="IsEnabled" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.EditMode}"/>

@@ -26,41 +26,19 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <c:IconButton IconImage="{StaticResource PrevDay}" MyCommand="{Binding PrevDayClickCommand}"/>
+            <c:IconButton IconImage="{StaticResource PrevDay}" MyCommand="{Binding PrevDayCommand}"/>
             <TextBlock Text="{Binding RecordedOn}"  VerticalAlignment="Center" Padding="2,0"/>
-            <c:IconButton IconImage="{StaticResource NextDay}" MyCommand="{Binding NextDayClickCommand}"/>
-            <c:IconButton IconImage="{StaticResource Calendar}" Margin="5,0,0,0" MyCommand="{Binding CalendarClickCommand}"/>
+            <c:IconButton IconImage="{StaticResource NextDay}" MyCommand="{Binding NextDayCommand}"/>
+            <c:IconButton IconImage="{StaticResource Calendar}" Margin="5,0,0,0" MyCommand="{Binding CalendarCommand}"/>
 
-            <c:IconButton IconImage="{StaticResource NewTodo}" Margin="15,0,0,0"/>
-            <c:IconButton IconImage="{StaticResource EmptyTodo}" Margin="3,0,0,0"/>
+            <c:IconButton IconImage="{StaticResource NewTodo}" Margin="15,0,0,0" MyCommand="{Binding NewTodoCommand}" ToolTip="テンプレートからログを作成"/>
+            <c:IconButton IconImage="{StaticResource EmptyTodo}" Margin="3,0,0,0" MyCommand="{Binding EmptyTodoCommand}" ToolTip="空のログを作成"/>
             
-            <c:IconButton IconImage="{StaticResource EditTemplate}" Margin="15,0,0,0" MyCommand="{Binding EditTemplateClickCommand}" ToolTip="テンプレート編集"/>
-            <c:IconButton IconImage="{StaticResource EditCategory}" Margin="10,0,0,0" MyCommand="{Binding EditCategoryClickCommand}" ToolTip="カテゴリ編集"/>
+            <c:IconButton IconImage="{StaticResource EditTemplate}" Margin="15,0,0,0" MyCommand="{Binding EditTemplateCommand}" ToolTip="テンプレート編集"/>
+            <c:IconButton IconImage="{StaticResource EditCategory}" Margin="10,0,0,0" MyCommand="{Binding EditCategoryCommand}" ToolTip="カテゴリ編集"/>
         </StackPanel>
 
-        <ListView Name="cData" Grid.Row="1" Padding="0" ItemsSource="{Binding ListData}" SelectedIndex="{Binding CurrentIndex}" >
-            <ListView.Resources>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <Border Background="{TemplateBinding Background}">
-                                    <ContentPresenter />
-                                </Border>
-
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="Green" />
-                                    </Trigger>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="Red" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.Resources>
+        <ListView Name="cData" Grid.Row="1" Padding="0" ItemsSource="{Binding LogData.LogList}" SelectedIndex="{Binding CurrentIndex}" >
             
             <ListView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource listBoxItemStyle}" TargetType="ListBoxItem" />
@@ -69,7 +47,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <Grid Height="30" HorizontalAlignment="Stretch"  Background="#795548" Visibility="{Binding HeaderVisibility}" >
+                        <Grid Height="30" HorizontalAlignment="Stretch"  Background="#795548" Visibility="{Binding CategoryVisibility}" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="25" />
@@ -83,22 +61,23 @@
                                 RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding id}" />-->
                         </Grid>
 
-                        <StackPanel Orientation="Horizontal" Visibility="{Binding DataVisibility}">
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding LogVisibility}">
                             <c:ResultButton Width="16" Height="16" ResultStatus="{Binding Result}" Margin="1,0,0,0" />
                             <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Todo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" />
-                            <c:TimeTextBox Text="{Binding PlanStart}" Width="45" Style="{StaticResource BasicTimeTextBox}"/>
-                            <TextBlock Text="-"  VerticalAlignment="Center"/>
-                            <c:TimeTextBox Text="{Binding PlanEnd}" Width="45" Style="{StaticResource BasicTimeTextBox}" MaxLength="4"/>
-                            <c:CustomTextBox ImeMode="Disabled" Text="{Binding PlanTime}" Width="30" Style="{StaticResource BaseTextBoxStyle}" MaxLength="3" TextAlignment="Right"/>
+
+                            <c:TimeSpanText 
+                                StartTime="{Binding PlanStart, Mode=TwoWay}"
+                                EndTime="{Binding PlanEnd, Mode=TwoWay}"
+                                Span="{Binding PlanTime, Mode=TwoWay}" />
 
                             <TextBlock Width="8"/>
-                            <c:TimeTextBox Text="{Binding ActualStart}" Width="45" Style="{StaticResource BasicTimeTextBox}"/>
-                            <c:IconButton IconImage="{StaticResource CurrentTime}" Width="20" Height="20"  Margin="1,0" />
-                            <TextBlock Text="-"  VerticalAlignment="Center"/>
-                            <c:TimeTextBox Text="{Binding ActualEnd}" Width="45" Style="{StaticResource BasicTimeTextBox}" MaxLength="4"/>
-                            <c:IconButton IconImage="{StaticResource CurrentTime}" Width="20" Height="20"  Margin="1,0"/>
-                            <c:CustomTextBox ImeMode="Disabled" Text="{Binding ActualTime}" Width="30" Style="{StaticResource BaseTextBoxStyle}" MaxLength="3" TextAlignment="Right"/>
 
+
+                            <c:TimeSpanText 
+                                StartTime="{Binding ActualStart, Mode=TwoWay}"
+                                EndTime="{Binding ActualEnd, Mode=TwoWay}"
+                                Span="{Binding ActualTime, Mode=TwoWay}" />
+                            
                             <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Memo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3"/>
 
                             <c:IconButton IconImage="{StaticResource DeleteTodo}" Width="20" Height="20"  Margin="1,0" />

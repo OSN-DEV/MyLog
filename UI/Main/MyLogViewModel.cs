@@ -1,12 +1,14 @@
 ﻿using MyLog.Data.Repo.Entity.DataModel;
 using MyLog.UI.Category;
 using MyLog.UI.Template;
+using MyLog.Data.Repo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using MyLog.AppCommon;
 
 namespace MyLog.UI.Main {
     /// <summary>
@@ -15,7 +17,7 @@ namespace MyLog.UI.Main {
     internal class MyLogViewModel : BaseBindable {
 
         #region Declaration
-        private MyLogMainWindow _owner;
+        private MyLogMainWindow _window;
         private const string DateFormat = "yyyy/MM/dd";
         #endregion
 
@@ -34,58 +36,59 @@ namespace MyLog.UI.Main {
         /// </summary>
         private LogData _logData;
         public LogData LogData {
-            set { base.SetProperty(ref this._logData, value); }
+            set { 
+                base.SetProperty(ref this._logData, value);
+                base.SetProperty(nameof(HasData));
+            }
             get { return this._logData; }
         }
 
         /// <summary>
         /// 該当日のログデータ有無
         /// </summary>
-        private bool _hasData;
         public bool HasData {
-            set { base.SetProperty(ref this._hasData, value); }
-            get { return this._hasData; }
+            get { return this.LogData != null; }
         }
 
         /// <summary>
         /// 前日クリック
         /// </summary>
-        public DelegateCommand PrevDayClickCommand { set; get; }
+        public DelegateCommand PrevDayCommand { set; get; }
 
         /// <summary>
         /// 翌日クリック
         /// </summary>
-        public DelegateCommand NextDayClickCommand { set; get; }
+        public DelegateCommand NextDayCommand { set; get; }
 
         /// <summary>
         /// カレンダークリック
         /// </summary>
-        public DelegateCommand CalendarClickCommand { set; get; }
+        public DelegateCommand CalendarCommand { set; get; }
 
         /// <summary>
         /// 新規TODO作成クリック
         /// </summary>
-        public DelegateCommand NewTodoClickCommand { set; get; }
+        public DelegateCommand NewTodoCommand { set; get; }
 
         /// <summary>
         /// 空のTODO作成クリック
         /// </summary>
-        public DelegateCommand EmptyTodoClickCommand { set; get; }
+        public DelegateCommand EmptyTodoCommand { set; get; }
 
         /// <summary>
         /// カテゴリ編集クリック
         /// </summary>
-        public DelegateCommand EditCategoryClickCommand { set; get; }
+        public DelegateCommand EditCategoryCommand { set; get; }
 
         /// <summary>
         /// テンプレート編集クリック
         /// </summary>
-        public DelegateCommand EditTemplateClickCommand { set; get; }
+        public DelegateCommand EditTemplateCommand { set; get; }
         #endregion
 
         #region Constructor
         public MyLogViewModel(MyLogMainWindow owner) {
-            this._owner = owner;
+            this._window = owner;
             this.Initialize();
         }
         #endregion
@@ -143,7 +146,7 @@ namespace MyLog.UI.Main {
         /// </summary>
         private void CalendarClick() {
             var window = new DateSelect(this.RecordedOn) {
-                Owner = this._owner
+                Owner = this._window
             };
             if (true != window.ShowDialog()) {
                 return;
@@ -156,14 +159,25 @@ namespace MyLog.UI.Main {
         /// 新規TODO作成クリック時の処理
         /// </summary>
         private void NewTodoClick() {
-
+            var repo = new MyLogRepo();
+            this.LogData = repo.CreateLog(this.RecordedOn);
+            try {
+                this.LogData.Id = repo.InsertHeader(this.RecordedOn);
+            } catch (Exception ex) {
+                Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
+            }
         }
 
         /// <summary>
         /// 空のTODO作成クリック時の処理
         /// </summary>
         private void EmptyTodoClick() {
-
+            try {
+                var repo = new MyLogRepo();
+                this.LogData = repo.CreateEmptyLog(this.RecordedOn);
+            } catch (Exception ex) {
+                Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
+            }
         }
 
         /// <summary>
@@ -171,7 +185,7 @@ namespace MyLog.UI.Main {
         /// </summary>
         private void EditCategoryClick() {
             var window = new CategoryWindow() {
-                Owner = this._owner
+                Owner = this._window
             };
             if (true != window.ShowDialog()) {
                 return;
@@ -183,7 +197,7 @@ namespace MyLog.UI.Main {
         /// </summary>
         private void EditTemplateClick() {
             var window = new TemplateWindow() {
-                Owner = this._owner
+                Owner = this._window
             };
             window.ShowDialog();
         }
@@ -196,13 +210,13 @@ namespace MyLog.UI.Main {
         /// </summary>
         private void Initialize() {
             // コマンドを設定
-            this.PrevDayClickCommand = new DelegateCommand(PrevDayClick);
-            this.NextDayClickCommand = new DelegateCommand(NextDayClick);
-            this.NewTodoClickCommand = new DelegateCommand(NewTodoClick);
-            this.EmptyTodoClickCommand = new DelegateCommand(EmptyTodoClick);
-            this.CalendarClickCommand = new DelegateCommand(CalendarClick);
-            this.EditCategoryClickCommand = new DelegateCommand(EditCategoryClick, () => true);
-            this.EditTemplateClickCommand = new DelegateCommand(EditTemplateClick, () => true);
+            this.PrevDayCommand = new DelegateCommand(PrevDayClick);
+            this.NextDayCommand = new DelegateCommand(NextDayClick);
+            this.NewTodoCommand = new DelegateCommand(NewTodoClick);
+            this.EmptyTodoCommand = new DelegateCommand(EmptyTodoClick);
+            this.CalendarCommand = new DelegateCommand(CalendarClick);
+            this.EditCategoryCommand = new DelegateCommand(EditCategoryClick, () => true);
+            this.EditTemplateCommand = new DelegateCommand(EditTemplateClick, () => true);
 
             // 初期データを表示
             this.RecordedOn = DateTime.Now.ToString(DateFormat);
@@ -213,7 +227,8 @@ namespace MyLog.UI.Main {
         /// 指定された日付のログデータを表示
         /// </summary>
         private void ShowDataByRecordedOn() {
-
+            var repo = new MyLogRepo();
+            this.LogData = repo.SelectByRecordedOn(this.RecordedOn);
         }
         #endregion
 

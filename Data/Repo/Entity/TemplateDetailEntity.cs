@@ -187,6 +187,15 @@ namespace MyLog.Data.Repo.Entity {
             this.PlanEnd = data.PlanEnd;
             this.PlanTime = data.PlanTime;
         }
+
+        /// <summary>
+        /// テンプレートの情報をログに挿入する
+        /// </summary>
+        /// <param name="templateId">テンプレートID</param>
+        /// <param name="logId">ログID</param>
+        internal void InsertToLog(long templateId, long logId) {
+
+        }
         #endregion
 
     }

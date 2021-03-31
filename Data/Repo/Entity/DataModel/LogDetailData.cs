@@ -1,4 +1,6 @@
-﻿namespace MyLog.Data.Repo.Entity.DataModel {
+﻿using System.Windows;
+
+namespace MyLog.Data.Repo.Entity.DataModel {
     /// <summary>
     /// log detail data
     /// </summary>
@@ -74,6 +76,24 @@
         /// カテゴリ名
         /// </summary>
         public string CategoryName { set; get; }
+
+        /// <summary>
+        /// カテゴリヘッダの可視
+        /// </summary>
+        public Visibility CategoryVisibility {
+            get {
+                return this.IsCategory ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
+        /// ログの可視
+        /// </summary>
+        public Visibility LogVisibility {
+            get {
+                return this.IsCategory ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
         #endregion
 
     }

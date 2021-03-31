@@ -7,6 +7,7 @@ namespace MyLog.Component {
     /// TimeSpanText
     /// </summary>
     public partial class TimeSpanText : UserControl {
+
         #region Constructor
         public TimeSpanText() {
             InitializeComponent();

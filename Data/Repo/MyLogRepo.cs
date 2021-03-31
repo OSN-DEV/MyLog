@@ -1,7 +1,9 @@
 ﻿using MyLog.AppCommon;
 using MyLog.Data.Repo.Entity;
 using MyLog.Data.Repo.Entity.DataModel;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace MyLog.Data.Repo {
@@ -107,14 +109,102 @@ namespace MyLog.Data.Repo {
         internal long InsertHeader(string recordedOn) {
             long result;
             using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
-                database.BeginTrans();
-                var entity = new LogEntity(database) {
-                    RecordedOn = recordedOn
-                };
-                result = entity.Insert();
-                database.CommitTrans();
+                try {
+                    database.Open();
+                    database.BeginTrans();
+                    var entity = new LogEntity(database) {
+                        RecordedOn = recordedOn
+                    };
+                    result = entity.Insert();
+                    database.CommitTrans();
+                } catch(Exception ex) {
+                    database.RollbackTrans();
+                    throw ex;
+                }
             }
             return result;
+        }
+
+        /// <summary>
+        /// 空のログを作成する
+        /// </summary>
+        /// <param name="recordedOn">記録日</param>
+        /// <returns>空のログデータ</returns>
+        internal LogData CreateEmptyLog(string recordedOn) {
+            var result = new LogData();
+            result.LogList = new ObservableCollection<LogDetailData>();
+            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+                try {
+                    database.Open();
+                    var categoryEntity = new CategoryEntity(database);
+                    var categories = new Dictionary<long, string>();
+                    using (var recset = categoryEntity.Select()) {
+                        while (recset.Read()) {
+                            if (!recset.GetBool(CategoryEntity.Cols.Visible)) {
+                                continue;
+                            }
+                            result.LogList.Add(new LogDetailData() {
+                                CategoryId = recset.GetLong(CategoryEntity.Cols.Id),
+                                CategoryName = recset.GetString(CategoryEntity.Cols.Name),
+                                IsCategory = true
+                            });
+                        }
+                    }
+
+                    database.BeginTrans();
+                    var logEntity = new LogEntity(database) {
+                        RecordedOn = recordedOn
+                    };
+                    result.Id = logEntity.Insert();
+                    database.CommitTrans();
+                } catch (Exception ex) {
+                    database.RollbackTrans();
+                    throw ex;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// テンプレートからログを作成する。
+        /// </summary>
+        /// <param name="recordedOn">日付</param>
+        /// <returns></returns>
+        internal LogData CreateLog(string recordedOn) {
+            var result = new LogData();
+
+            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+                database.Open();
+                var templateEntity = new TemplateEntity(database);
+                long templateId;
+                using (var recset = templateEntity.SelectByWeekDay(recordedOn)) {
+                    // テンプレートが存在しない場合は空の情報を作成
+                    if (!recset.Read()) {
+                        return CreateEmptyLog(recordedOn);              
+                    }
+                    templateId = recset.GetLong(TemplateEntity.Cols.Id);
+                    result.RecordedOn = recordedOn;
+                }
+
+                try {
+                    database.BeginTrans();
+                    var logEntity = new LogEntity(database) {
+                        RecordedOn = recordedOn
+                    };
+                    result.Id = logEntity.Insert();
+
+
+                    var templateDetailEntity = new TemplateDetailEntity(database);
+                    templateDetailEntity.InsertToLog(templateId, result.Id);
+                    database.CommitTrans();
+                } catch (Exception ex) {
+                    database.RollbackTrans();
+                    throw ex;
+                }
+            }
+
+
+            return this.SelectByRecordedOn(recordedOn);
         }
 
         /// <summary>
