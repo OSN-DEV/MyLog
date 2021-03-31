@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <BitmapImage x:Key="PrevDay" UriSource="PrevDay.png" />
+    <BitmapImage x:Key="NextDay" UriSource="NextDay.png" />
+    <BitmapImage x:Key="Calendar" UriSource="Calendar.png" />
+    <BitmapImage x:Key="EmptyTodo" UriSource="EmptyTodo.png" />
+    <BitmapImage x:Key="NewTodo" UriSource="NewTodo.png" />
+    <BitmapImage x:Key="EditTemplate" UriSource="EditTemplate.png" />
+    <BitmapImage x:Key="EditCategory" UriSource="EditCategory.png" />
+    <BitmapImage x:Key="CurrentTime" UriSource="CurrentTime.png" />
+    <BitmapImage x:Key="Add" UriSource="Add.png" />
+    <BitmapImage x:Key="Edit" UriSource="Edit.png" />
+    <BitmapImage x:Key="Delete" UriSource="Delete.png" />
+    <BitmapImage x:Key="Save" UriSource="Save.png" />
+    <BitmapImage x:Key="Clear" UriSource="Clear.png" />
+    <BitmapImage x:Key="Cancel" UriSource="Cancel.png" />
+    <BitmapImage x:Key="DeleteTodo" UriSource="DeleteTodo.png" />
+    <BitmapImage x:Key="Visible" UriSource="Visible.png" />
+    <BitmapImage x:Key="Invisible" UriSource="Invisible.png" />
+
+</ResourceDictionary>

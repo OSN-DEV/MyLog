@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{69016452-51DC-4181-9BF4-82A31B006D6F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>MyLog</RootNamespace>
+    <AssemblyName>MyLog</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\2\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>AppIco.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OsnCsLib.Common">
+      <HintPath>Libs\OsnCsLib.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="OsnCsLib.Data">
+      <HintPath>Libs\OsnCsLib.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="OsnCsLib.File">
+      <HintPath>Libs\OsnCsLib.File.dll</HintPath>
+    </Reference>
+    <Reference Include="OsnCsLib.WPFComponent">
+      <HintPath>Libs\OsnCsLib.WPFComponent.dll</HintPath>
+    </Reference>
+    <Reference Include="OsnLib.Data.Sqlite">
+      <HintPath>Libs\OsnLib.Data.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>Libs\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AppCommon\Constants.cs" />
+    <Compile Include="AppCommon\Message.cs" />
+    <Compile Include="Component\CustomTextBox.cs" />
+    <Compile Include="Component\IconButton.xaml.cs">
+      <DependentUpon>IconButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Component\ResultButton.xaml.cs">
+      <DependentUpon>ResultButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Component\TimeSpanText.xaml.cs">
+      <DependentUpon>TimeSpanText.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Component\TimeTextBox.cs" />
+    <Compile Include="Component\VisibleButton.xaml.cs">
+      <DependentUpon>VisibleButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Repo\AppSettingsRepo.cs" />
+    <Compile Include="Data\Repo\CategoryRepo.cs" />
+    <Compile Include="Data\Repo\Entity\BaseEntity.cs" />
+    <Compile Include="Data\Repo\Entity\DataModel\TemplateDetailData.cs" />
+    <Compile Include="Data\Repo\Entity\DataModel\TemplateData.cs" />
+    <Compile Include="Data\Repo\Entity\DataModel\LogDetailData.cs" />
+    <Compile Include="Data\Repo\Entity\DataModel\LogData.cs" />
+    <Compile Include="Data\Repo\Entity\DataModel\CategoryData.cs" />
+    <Compile Include="Data\Repo\Entity\DataModel\TemplateListItem.cs" />
+    <Compile Include="Data\Repo\Entity\TemplateDetailEntity.cs" />
+    <Compile Include="Data\Repo\Entity\TemplateEntity.cs" />
+    <Compile Include="Data\Repo\Entity\LogDetailEntity.cs" />
+    <Compile Include="Data\Repo\Entity\LogEntity.cs" />
+    <Compile Include="Data\Repo\Entity\MyLogDatabase.cs" />
+    <Compile Include="Data\Repo\Entity\CategoryEntity.cs" />
+    <Compile Include="Data\Repo\TemplateRepo.cs" />
+    <Compile Include="Data\Repo\MyLogRepo.cs" />
+    <Compile Include="Data\Repo\BaseRepo.cs" />
+    <Compile Include="UI\BaseBindable.cs" />
+    <Compile Include="UI\Category\CategoryViewModel.cs" />
+    <Compile Include="UI\Category\CategoryWindow.xaml.cs">
+      <DependentUpon>CategoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DateSelectDialog.xaml.cs">
+      <DependentUpon>DateSelectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DelegateCommandWithParam.cs" />
+    <Compile Include="UI\DelegateCommand.cs" />
+    <Compile Include="UI\ListViewProto\Proto.xaml.cs">
+      <DependentUpon>Proto.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ListViewProto\ProtoViewModel.cs" />
+    <Compile Include="UI\ListViewProto\ReorderableItemsControlBehavior.cs" />
+    <Compile Include="UI\Main\MyLogMainWindow.xaml.cs">
+      <DependentUpon>MyLogMainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Main\MyLogViewModel.cs" />
+    <Compile Include="UI\Template\TemplateViewModel.cs" />
+    <Compile Include="UI\Template\TemplateWindow.xaml.cs">
+      <DependentUpon>TemplateWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="AppIco.ico" />
+    <Resource Include="Res\Add.png" />
+    <Resource Include="Res\Calendar.png" />
+    <Resource Include="Res\Cancel.png" />
+    <Resource Include="Res\EditCategory.png" />
+    <Resource Include="Res\Checked.png" />
+    <Resource Include="Res\Clear.png" />
+    <Resource Include="Res\CurrentTime.png" />
+    <Resource Include="Res\Delete.png" />
+    <Resource Include="Res\DeleteTodo.png" />
+    <Resource Include="Res\Edit.png" />
+    <Resource Include="Res\EditTemplate.png" />
+    <Resource Include="Res\EmptyTodo.png" />
+    <Resource Include="Res\Invisible.png" />
+    <Resource Include="Res\Knob.png" />
+    <Resource Include="Res\NewTodo.png" />
+    <Resource Include="Res\Save.png" />
+    <Resource Include="Res\Visible.png" />
+    <Resource Include="Res\NextDay.png" />
+    <Resource Include="Res\PrevDay.png" />
+    <Page Include="Component\IconButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\ResultButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\TimeSpanText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\VisibleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Res\ImageDefinition.xaml">
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Resource Include="Res\BackgroundHover.png" />
+    <Resource Include="Res\BackgroundPressed.png" />
+    <Content Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Component\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Category\CategoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\DateSelectDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ListViewProto\Proto.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Main\MyLogMainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Template\TemplateWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ListViewDragDropManager\ListViewDragDropManager\ListViewDragDropManager.csproj">
+      <Project>{bc374226-94c0-44fa-a992-fe57fa79213e}</Project>
+      <Name>ListViewDragDropManager</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

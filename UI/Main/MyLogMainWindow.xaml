@@ -1,0 +1,112 @@
+﻿<Window x:Class="MyLog.UI.Main.MyLogMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyLog.UI.Main"
+        xmlns:c="clr-namespace:MyLog.Component"
+        mc:Ignorable="d"
+        xmlns:jas="clr-namespace:WPF.JoshSmith.ServiceProviders.UI;assembly=ListViewDragDropManager"
+        Title="自分のログ" Height="600" Width="940" WindowStartupLocation="CenterScreen" >
+ 
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/MyLog;component/Component/Generic.xaml"  />
+                <!--<ResourceDictionary Source="pack://application:,,,/MyLog;component/Component/ImageButtonStyle.xaml" />-->
+                <ResourceDictionary Source="pack://application:,,,/MyLog;component/Res/ImageDefinition.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid Margin="10,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <c:IconButton IconImage="{StaticResource PrevDay}" MyCommand="{Binding PrevDayClickCommand}"/>
+            <TextBlock Text="{Binding RecordedOn}"  VerticalAlignment="Center" Padding="2,0"/>
+            <c:IconButton IconImage="{StaticResource NextDay}" MyCommand="{Binding NextDayClickCommand}"/>
+            <c:IconButton IconImage="{StaticResource Calendar}" Margin="5,0,0,0" MyCommand="{Binding CalendarClickCommand}"/>
+
+            <c:IconButton IconImage="{StaticResource NewTodo}" Margin="15,0,0,0"/>
+            <c:IconButton IconImage="{StaticResource EmptyTodo}" Margin="3,0,0,0"/>
+            
+            <c:IconButton IconImage="{StaticResource EditTemplate}" Margin="15,0,0,0" MyCommand="{Binding EditTemplateClickCommand}" ToolTip="テンプレート編集"/>
+            <c:IconButton IconImage="{StaticResource EditCategory}" Margin="10,0,0,0" MyCommand="{Binding EditCategoryClickCommand}" ToolTip="カテゴリ編集"/>
+        </StackPanel>
+
+        <ListView Name="cData" Grid.Row="1" Padding="0" ItemsSource="{Binding ListData}" SelectedIndex="{Binding CurrentIndex}" >
+            <ListView.Resources>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter />
+                                </Border>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Green" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Red" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.Resources>
+            
+            <ListView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource listBoxItemStyle}" TargetType="ListBoxItem" />
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Grid Height="30" HorizontalAlignment="Stretch"  Background="#795548" Visibility="{Binding HeaderVisibility}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="25" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Foreground="White" Text="{Binding CategoryName}" Style="{StaticResource BasicTextBlock}" Margin="10,0,0,0" />
+
+                            <c:IconButton IconImage="{StaticResource Add}" Width="20" Height="20" HorizontalAlignment="Right"/>
+                            
+                            <!--<Button Grid.Column="1" Content="+" Width="30" HorizontalAlignment="Right" 
+                                    Command="{Binding DataContext.OnAddTodoClick, 
+                                RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding id}" />-->
+                        </Grid>
+
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding DataVisibility}">
+                            <c:ResultButton Width="16" Height="16" ResultStatus="{Binding Result}" Margin="1,0,0,0" />
+                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Todo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" />
+                            <c:TimeTextBox Text="{Binding PlanStart}" Width="45" Style="{StaticResource BasicTimeTextBox}"/>
+                            <TextBlock Text="-"  VerticalAlignment="Center"/>
+                            <c:TimeTextBox Text="{Binding PlanEnd}" Width="45" Style="{StaticResource BasicTimeTextBox}" MaxLength="4"/>
+                            <c:CustomTextBox ImeMode="Disabled" Text="{Binding PlanTime}" Width="30" Style="{StaticResource BaseTextBoxStyle}" MaxLength="3" TextAlignment="Right"/>
+
+                            <TextBlock Width="8"/>
+                            <c:TimeTextBox Text="{Binding ActualStart}" Width="45" Style="{StaticResource BasicTimeTextBox}"/>
+                            <c:IconButton IconImage="{StaticResource CurrentTime}" Width="20" Height="20"  Margin="1,0" />
+                            <TextBlock Text="-"  VerticalAlignment="Center"/>
+                            <c:TimeTextBox Text="{Binding ActualEnd}" Width="45" Style="{StaticResource BasicTimeTextBox}" MaxLength="4"/>
+                            <c:IconButton IconImage="{StaticResource CurrentTime}" Width="20" Height="20"  Margin="1,0"/>
+                            <c:CustomTextBox ImeMode="Disabled" Text="{Binding ActualTime}" Width="30" Style="{StaticResource BaseTextBoxStyle}" MaxLength="3" TextAlignment="Right"/>
+
+                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Memo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3"/>
+
+                            <c:IconButton IconImage="{StaticResource DeleteTodo}" Width="20" Height="20"  Margin="1,0" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+    </Grid>
+</Window>

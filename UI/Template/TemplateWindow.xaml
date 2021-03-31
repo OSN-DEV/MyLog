@@ -1,0 +1,149 @@
+﻿<Window x:Class="MyLog.UI.Template.TemplateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyLog.UI.Main"
+        xmlns:c="clr-namespace:MyLog.Component"
+        mc:Ignorable="d"
+        xmlns:jas="clr-namespace:WPF.JoshSmith.ServiceProviders.UI;assembly=ListViewDragDropManager"
+        Title="テンプレート編集" Height="600" Width="520" WindowStartupLocation="CenterScreen" Name="Main">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/MyLog;component/Component/Generic.xaml"  />
+                <!--<ResourceDictionary Source="pack://application:,,,/MyLog;component/Component/ImageButtonStyle.xaml" />-->
+                <ResourceDictionary Source="pack://application:,,,/MyLog;component/Res/ImageDefinition.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                <Setter Property="Width" Value="24" />
+                <Setter Property="Height" Value="24" />
+                <Setter Property="Margin" Value="0,0,5,0" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ContentControl}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter  x:Name="Presenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Background" Value="#795548"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="False">
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="Foreground" Value="#333333"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#a98274"/>
+                        <Setter Property="Foreground" Value="#333333"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="10,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{Binding SearchPanelVisibility}" Margin="0,0,0,5">
+            <ComboBox Width="250" SelectedIndex="{Binding TemplateIndex}" ItemsSource="{Binding TemplateList}"/>
+            <c:IconButton IconImage="{StaticResource Add}" Margin="10,0,0,0" MyCommand="{Binding AddTemplateCommand}"/>
+            <c:IconButton IconImage="{StaticResource Edit}" Margin="15,0,0,0" IsEnabled="{Binding IsEnabledEdit}" MyCommand="{Binding EditTemplateCommand}"/>
+            <c:IconButton IconImage="{StaticResource Delete}" Margin="3,0,0,0" IsEnabled="{Binding IsEnabledEdit}" MyCommand="{Binding DeleteTemplateCommand}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Visibility="{Binding EditHeaderPanelVisiblity}">
+            <c:CustomTextBox x:Name="cTemplateName" Text="{Binding Name}" ImeMode="Hiragana" Width="250" 
+                             Style="{StaticResource BaseTextBoxStyle}"/>
+
+            <c:IconButton IconImage="{StaticResource Save}" Margin="10,0,0,0" MyCommand="{Binding SaveTemplateCommand}" IsEnabled="{Binding IsEnabledSave}"/>
+            <c:IconButton IconImage="{StaticResource Clear}" Margin="15,0,0,0" MyCommand="{Binding ClearCommand}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,5">
+            <ToggleButton Content="日" IsChecked="{Binding TemplateData.Sun}" IsEnabled="{Binding EditMode}"/>
+            <ToggleButton Content="月" IsChecked="{Binding TemplateData.Mon}" IsEnabled="{Binding EditMode}" />
+            <ToggleButton Content="火" IsChecked="{Binding TemplateData.Tue}" IsEnabled="{Binding EditMode}" />
+            <ToggleButton Content="水" IsChecked="{Binding TemplateData.Wed}" IsEnabled="{Binding EditMode}" />
+            <ToggleButton Content="木" IsChecked="{Binding TemplateData.Thu}" IsEnabled="{Binding EditMode}" />
+            <ToggleButton Content="金" IsChecked="{Binding TemplateData.Fri}" IsEnabled="{Binding EditMode}" />
+            <ToggleButton Content="土" IsChecked="{Binding TemplateData.Sat}" IsEnabled="{Binding EditMode}" />
+        </StackPanel>
+
+        <ListView Name="cData" Grid.Row="3" Padding="0" ItemsSource="{Binding TemplateData.LogList}" >
+            <ListView.Resources>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter />
+                                </Border>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Green" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Red" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.Resources>
+
+            <ListView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource listBoxItemStyle}" TargetType="ListBoxItem" >
+                    <Setter Property="IsEnabled" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=DataContext.EditMode}"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Grid Height="30" HorizontalAlignment="Stretch"  Background="#795548" Visibility="{Binding CategoryVisibility}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="25" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Foreground="White" Text="{Binding CategoryName}" Style="{StaticResource BasicTextBlock}" Margin="10,0,0,0" />
+
+                            <c:IconButton IconImage="{StaticResource Add}" Width="20" Height="20" HorizontalAlignment="Right"
+                                          MyCommand="{Binding DataContext.AddLogCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          MyCommandParam ="{Binding CategoryId}"/>
+                        </Grid>
+
+                        <StackPanel Height="30" Orientation="Horizontal" Visibility="{Binding LogVisibility}">
+                            <Image Cursor="Hand" Source="/MyLog;component/Res/Knob.png" Width="24" Height="24"/>
+                            <TextBlock Width="10"/>
+                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Todo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" />
+
+
+                            <c:TimeSpanText 
+                                StartTime="{Binding PlanStart, Mode=TwoWay}"
+                                EndTime="{Binding PlanEnd, Mode=TwoWay}"
+                                Span="{Binding PlanTime, Mode=TwoWay}" />
+                            <c:IconButton IconImage="{StaticResource DeleteTodo}" Width="20" Height="20"  Margin="1,0"
+                                          MyCommand="{Binding DataContext.DeleteTodoCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          MyCommandParam ="{Binding Priority}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+    </Grid>
+
+</Window>

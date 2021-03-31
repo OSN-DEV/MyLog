@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="MyLog.Component.VisibleButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" 
+             d:DesignHeight="24" d:DesignWidth="24" Name="Main">
+        <UserControl.Resources>
+            <ResourceDictionary>
+                <Style TargetType="Image">
+                    <Setter Property="Width" Value="16"/>
+                    <Setter Property="Height" Value="16" />
+                </Style>
+                <Style TargetType="Button">
+                    <Setter Property="Width" Value="16"/>
+                    <Setter Property="Height" Value="16" />
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="Transparent"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="Transparent" />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+            </ResourceDictionary>
+        </UserControl.Resources>
+        <Grid>
+            <Image>
+                <Image.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=VisibleStatus, ElementName=Main}" Value="false" >
+                              <Setter Property="Image.Source" Value="/MyLog;component/Res/Invisible.png" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=VisibleStatus, ElementName=Main}" Value="true" >
+                                <Setter Property="Image.Source" Value="/MyLog;component/Res/Visible.png" />
+                            </DataTrigger>
+                    </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            <Button Click="VisibleButton_Click" Cursor="Hand"/>
+        </Grid>
+</UserControl>

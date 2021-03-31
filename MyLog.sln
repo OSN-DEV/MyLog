@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyLog", "MyLog.csproj", "{69016452-51DC-4181-9BF4-82A31B006D6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListViewDragDropManager", "..\ListViewDragDropManager\ListViewDragDropManager\ListViewDragDropManager.csproj", "{BC374226-94C0-44FA-A992-FE57FA79213E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{69016452-51DC-4181-9BF4-82A31B006D6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69016452-51DC-4181-9BF4-82A31B006D6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69016452-51DC-4181-9BF4-82A31B006D6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69016452-51DC-4181-9BF4-82A31B006D6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC374226-94C0-44FA-A992-FE57FA79213E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC374226-94C0-44FA-A992-FE57FA79213E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC374226-94C0-44FA-A992-FE57FA79213E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC374226-94C0-44FA-A992-FE57FA79213E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1EDBCDA5-8C1B-40E0-88CE-20DF448744BE}
+	EndGlobalSection
+EndGlobal
