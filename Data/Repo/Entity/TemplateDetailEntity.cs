@@ -194,7 +194,28 @@ namespace MyLog.Data.Repo.Entity {
         /// <param name="templateId">テンプレートID</param>
         /// <param name="logId">ログID</param>
         internal void InsertToLog(long templateId, long logId) {
-
+            var sql = new SqlBuilder();
+            sql.AppendSql($"INSERT INTO {LogDetailEntity.TableName}")
+                .AppendSql("(")
+                .AppendSql($" {LogDetailEntity.Cols.LogId}")
+                .AppendSql($",{LogDetailEntity.Cols.CategoryId}")
+                .AppendSql($",{LogDetailEntity.Cols.Priority}")
+                .AppendSql($",{LogDetailEntity.Cols.Todo}")
+                .AppendSql($",{LogDetailEntity.Cols.PlanStart}")
+                .AppendSql($",{LogDetailEntity.Cols.PlanEnd}")
+                .AppendSql($",{LogDetailEntity.Cols.PlanTime}")
+                .AppendSql(")")
+                .AppendSql("SELECT")
+                .AppendSql($" {logId}")
+                .AppendSql($",{Cols.CategoryId}")
+                .AppendSql($",{Cols.Priority}")
+                .AppendSql($",{Cols.Todo}")
+                .AppendSql($",{Cols.PlanStart}")
+                .AppendSql($",{Cols.PlanEnd}")
+                .AppendSql($",{Cols.PlanTime}")
+                .AppendSql($"FROM {TableName}")
+                .AppendSql($"WHERE {Cols.TemplateId} = {templateId}");
+            base.Database.ExecuteNonQuery(sql);
         }
         #endregion
 

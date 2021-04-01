@@ -25,7 +25,7 @@ namespace MyLog.Data.Repo {
                 // カテゴリ情報を取得
                 var categoryEntity = new CategoryEntity(database);
                 var categories = new Dictionary<long, string>();
-                using (var recset = categoryEntity.Select()) {
+                using (var recset = categoryEntity.SelectVisible()) {
                     while (recset.Read()) {
                         categories.Add(recset.GetLong(CategoryEntity.Cols.Id),
                                         recset.GetString(CategoryEntity.Cols.Name));
@@ -40,6 +40,7 @@ namespace MyLog.Data.Repo {
                         var templateData = new TemplateData {
                             Id = recset.GetLong(TemplateEntity.Cols.Id),
                             Name = recset.GetString(TemplateEntity.Cols.Name),
+                            Sun = recset.GetBool(TemplateEntity.Cols.Sun),
                             Mon = recset.GetBool(TemplateEntity.Cols.Mon),
                             Tue = recset.GetBool(TemplateEntity.Cols.Tue),
                             Wed = recset.GetBool(TemplateEntity.Cols.Wed),
@@ -159,16 +160,18 @@ namespace MyLog.Data.Repo {
         /// <param name="detailList">明細情報のリスト</param>
         /// <param name="entity">エンティティ</param>
         /// <param name="id">id</param>
-        /// <param name="categoriesBase">カテゴリ情報</param>
+        /// <param name="categories">カテゴリ情報</param>
         private void SelectDetailByTemplateId(ObservableCollection<TemplateDetailData>  detailList, 
             TemplateDetailEntity entity, long id, Dictionary<long, string> categories) {
-            
+            var startIndex = 0;
+
             using (var recset = entity.SelectByTemplateId(id)) {
                 var currentCategory = -1L;
                 while (recset.Read()) {
                     var detail = new TemplateDetailData {
                         CategoryId = recset.GetLong(LogDetailEntity.Cols.CategoryId),
                         Priority = recset.GetInt(LogDetailEntity.Cols.Priority),
+                        Todo = recset.GetString(LogDetailEntity.Cols.Todo),
                         PlanStart = recset.GetString(LogDetailEntity.Cols.PlanStart),
                         PlanEnd = recset.GetString(LogDetailEntity.Cols.PlanEnd),
                         PlanTime = recset.GetInt(LogDetailEntity.Cols.PlanTime),
@@ -176,23 +179,33 @@ namespace MyLog.Data.Repo {
                     detail.IsCategory = false;
 
                     if (currentCategory != detail.CategoryId) {
-                        for (var i = 0; i < categories.Count; i++) {
+                        for (var i = startIndex; i < categories.Count; i++) {
                             var categoryId = categories.ElementAt(i).Key;
-                            if (currentCategory < categoryId && categoryId <= detail.CategoryId) {
-                                var category = new TemplateDetailData {
-                                    IsCategory = true,
-                                    CategoryId = categoryId,
-                                    CategoryName = categories[categoryId]
-                                };
-                                detailList.Add(category);
+                            var category = new TemplateDetailData {
+                                IsCategory = true,
+                                CategoryId = categoryId,
+                                CategoryName = categories[categoryId]
+                            };
+                            detailList.Add(category);
+                            if (categoryId == detail.CategoryId) {
+                                startIndex = i + 1;
                                 currentCategory = categoryId;
+                                break;
                             }
+                            currentCategory = categoryId;
                         }
                     }
                     detailList.Add(detail);
                 }
 
-                for (var i = currentCategory + 1; i < categories.Count; i++) {
+                startIndex = -1;
+                for (var i = 0; i < categories.Count; i++) {
+                    if (currentCategory == categories.ElementAt(i).Key) {
+                        startIndex = i;
+                        break;
+                    }
+                }
+                for (var i = startIndex + 1; i < categories.Count; i++) {
                     var categoryId = categories.ElementAt((int)i).Key;
                     var category = new TemplateDetailData {
                         IsCategory = true,

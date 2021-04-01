@@ -33,6 +33,11 @@ namespace MyLog.UI.Template {
         public ObservableCollection<TemplateData> TemplateList { set; get; }
 
         /// <summary>
+        /// テンプレート名のリスト
+        /// </summary>
+        public ObservableCollection<string> TemplateNameList { set; get; } = new ObservableCollection<string>();
+
+        /// <summary>
         /// 編集モード
         /// </summary>
         private bool _editMode = false;
@@ -82,11 +87,14 @@ namespace MyLog.UI.Template {
         public string Name {
             set {
                 base.SetProperty(ref this._name, value);
-                this.TemplateData.Name = this._name;
+                if (null != this.TemplateData) {
+                    this.TemplateData.Name = this._name;
+                }
                 base.SetProperty(nameof(this.IsEnabledSave));
             }
             get { return this._name; }
         }
+
         /// <summary>
         /// 編集・削除ボタンの使用可否
         /// </summary>
@@ -176,6 +184,7 @@ namespace MyLog.UI.Template {
         /// </summary>
         private void AddTemplateClick() {
             this.EditMode = true;
+            this._isNew = true;
             this._window.cTemplateName.Focus();
 
             this.Name = "";
@@ -199,6 +208,7 @@ namespace MyLog.UI.Template {
             try {
                 repo.DeleteByTemplateId(this.TemplateData.Id);
                 this.TemplateList.Remove(this.TemplateData);
+                this.CreateTemplateNameList();
                 this.ClearClick();
             } catch (Exception ex) {
                 Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
@@ -215,6 +225,7 @@ namespace MyLog.UI.Template {
                 if (this._isNew) {
                     this.TemplateList.Add(this.TemplateData);
                 }
+                this.CreateTemplateNameList();
                 this.ClearClick();
             } catch(Exception ex) {
                 Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
@@ -261,9 +272,12 @@ namespace MyLog.UI.Template {
                 });
             }
             this.SetPriority();
-            this._isNew = true;
         }
 
+        /// <summary>
+        /// Todo削除クリック
+        /// </summary>
+        /// <param name="priority"></param>
         private void DeleteTodoClick(int priority) {
             // Priorityは一意なので
             foreach (var (template, index) in this.TemplateData.LogList.Select((template, index) => (template, index))) {
@@ -292,6 +306,7 @@ namespace MyLog.UI.Template {
             // 
             var repo = new TemplateRepo();
             this.TemplateList = repo.Select();
+            this.CreateTemplateNameList();
         }
 
         /// <summary>
@@ -301,6 +316,18 @@ namespace MyLog.UI.Template {
         private void SetPriority() {
             foreach (var (template, index) in this.TemplateData.LogList.Select((template, index) => (template, index))) {
                 template.Priority = index;
+            }
+        }
+
+        /// <summary>
+        /// コンボボックス用のソースを作成
+        /// </summary>
+        /// <remarks>TemplateListをソースにすると名称変更が即時反映されないため</remarks>
+        private void CreateTemplateNameList() {
+
+            TemplateNameList.Clear();
+            foreach(var data in TemplateList) {
+                TemplateNameList.Add(data.Name);
             }
         }
         #endregion

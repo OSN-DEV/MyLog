@@ -107,7 +107,7 @@ namespace MyLog.Data.Repo.Entity {
             var sql = new SqlBuilder();
             sql.AppendSql($"INSERT INTO {TableName}")
                 .AppendSql("(")
-                .AppendSql($",{Cols.Name}")
+                .AppendSql($" {Cols.Name}")
                 .AppendSql($",{Cols.Sun}")
                 .AppendSql($",{Cols.Mon}")
                 .AppendSql($",{Cols.Tue}")
@@ -209,7 +209,7 @@ namespace MyLog.Data.Repo.Entity {
             this.Wed = data.Wed;
             this.Thu = data.Thu;
             this.Fri = data.Fri;
-            this.Sat = this.Sat;
+            this.Sat = data.Sat;
         }
 
         /// <summary>

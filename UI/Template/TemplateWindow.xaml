@@ -7,7 +7,7 @@
         xmlns:c="clr-namespace:MyLog.Component"
         mc:Ignorable="d"
         xmlns:jas="clr-namespace:WPF.JoshSmith.ServiceProviders.UI;assembly=ListViewDragDropManager"
-        Title="テンプレート編集" Height="600" Width="520" WindowStartupLocation="CenterScreen" Name="Main">
+        Title="テンプレート編集" Height="600" Width="520" WindowStartupLocation="CenterScreen" Name="Main" ShowInTaskbar="False">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -56,7 +56,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{Binding SearchPanelVisibility}" Margin="0,0,0,5">
-            <ComboBox Width="250" SelectedIndex="{Binding TemplateIndex}" ItemsSource="{Binding TemplateList}"/>
+            <ComboBox Width="250" SelectedIndex="{Binding TemplateIndex}" ItemsSource="{Binding TemplateNameList}"/>
             <c:IconButton IconImage="{StaticResource Add}" Margin="10,0,0,0" MyCommand="{Binding AddTemplateCommand}"/>
             <c:IconButton IconImage="{StaticResource Edit}" Margin="15,0,0,0" IsEnabled="{Binding IsEnabledEdit}" MyCommand="{Binding EditTemplateCommand}"/>
             <c:IconButton IconImage="{StaticResource Delete}" Margin="3,0,0,0" IsEnabled="{Binding IsEnabledEdit}" MyCommand="{Binding DeleteTemplateCommand}"/>
