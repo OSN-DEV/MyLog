@@ -18,12 +18,22 @@ namespace MyLog.Component {
                 if (cSpan.Text == "0") {
                     cSpan.Text = "";
                 }
+                var spanTime = 0;
+                if (0 < this.cSpan.Text.Length) {
+                    spanTime = int.Parse(this.cSpan.Text);
+                }
+                this.TimeDataChanged?.Invoke(long.Parse(this.Tag.ToString()), this.cStart.Text, this.cEnd.Text, spanTime);
             };
         }
 
         #endregion
 
         #region Event
+        #region Public Event
+        public delegate void TimeDataChangedHandle(long id, string start, string end, int span);
+        public event TimeDataChangedHandle TimeDataChanged;
+        #endregion
+
         private void TimeChanged(object sender, EventArgs e) {
             if (0 == this.cStart.Text.Length || 0 == this.cEnd.Text.Length) {
                 return;
@@ -36,6 +46,12 @@ namespace MyLog.Component {
                 return;
             }
             this.cSpan.Text = span.TotalMinutes.ToString();
+
+            var spanTime = 0;
+            if (0 < this.cSpan.Text.Length) {
+                spanTime = int.Parse(this.cSpan.Text);
+            }
+            this.TimeDataChanged?.Invoke(long.Parse(this.Tag.ToString()), this.cStart.Text, this.cEnd.Text, spanTime);
         }
         #endregion
 

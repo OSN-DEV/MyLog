@@ -22,6 +22,17 @@ namespace MyLog.UI.Category {
         public ObservableCollection<CategoryData> DataContext { set; get; }
 
         /// <summary>
+        /// 現在の行
+        /// </summary>
+        private int _currentIndex = 0;
+        public int CurrentIndex {
+            get { return this._currentIndex; }
+            set {
+                base.SetProperty(ref this._currentIndex, value);
+            }
+        }
+
+        /// <summary>
         /// 保存コマンド
         /// </summary>
         public DelegateCommand SaveCommand { set; get; }

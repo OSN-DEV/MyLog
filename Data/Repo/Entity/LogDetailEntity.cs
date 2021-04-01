@@ -1,4 +1,5 @@
-﻿using OsnLib.Data.Sqlite;
+﻿using MyLog.Data.Repo.Entity.DataModel;
+using OsnLib.Data.Sqlite;
 using System;
 
 namespace MyLog.Data.Repo.Entity {
@@ -45,7 +46,7 @@ namespace MyLog.Data.Repo.Entity {
         /// <summary>
         /// ログ情報ID
         /// </summary>
-        internal long LogHId { set; get; }
+        internal long LogId { set; get; }
 
         /// <summary>
         /// カテゴリID
@@ -116,6 +117,7 @@ namespace MyLog.Data.Repo.Entity {
                 .AppendSql($",{Cols.LogId}        INTEGER NOT NULL")
                 .AppendSql($",{Cols.CategoryId}   INTEGER NOT NULL")
                 .AppendSql($",{Cols.Priority}     INTEGER NOT NULL")
+                .AppendSql($",{Cols.Result}       INTEGER")
                 .AppendSql($",{Cols.Todo}         TEXT")
                 .AppendSql($",{Cols.PlanStart}    TEXT")
                 .AppendSql($",{Cols.PlanEnd}      TEXT")
@@ -165,7 +167,7 @@ namespace MyLog.Data.Repo.Entity {
                 .AppendSql(",datetime('now', 'localtime')")
                 .AppendSql(")");
             var paramList = new ParameterList();
-            paramList.Add($"@{Cols.LogId}", this.LogHId);
+            paramList.Add($"@{Cols.LogId}", this.LogId);
             paramList.Add($"@{Cols.CategoryId}", this.CategoryId);
             paramList.Add($"@{Cols.Priority}", this.Priority);
             paramList.Add($"@{Cols.Todo}", this.PlanStart);
@@ -218,14 +220,35 @@ namespace MyLog.Data.Repo.Entity {
         internal void UpdateById(long id) {
             var sql = new SqlBuilder();
             sql.AppendSql($"UPDATE {TableName} SET");
-            bool isFirstRow = false;
+            bool isFirstRow = true;
             foreach (var param in base.Params.GetParameterList()) {
                 sql.AppendSql(isFirstRow ? " " : ",")
-                    .AppendSql($"{param.ParameterName.Substring(2)} = @{param.ParameterName}");
-                isFirstRow = true;
+                    .AppendSql($"{param.ParameterName.Substring(1)} = {param.ParameterName}");
+                isFirstRow = false;
             }
-            sql.AppendSql($"WHERE {Cols.Id} = {id}");
+            sql.AppendSql($",{Cols.UpdateAt} = datetime('now', 'localtime')")
+                .AppendSql($"WHERE {Cols.Id} = {id}");
             base.Database.ExecuteNonQuery(sql, base.Params);
+        }
+
+        /// <summary>
+        /// ログデータをエンティティん設定する
+        /// </summary>
+        /// <param name="data">ログデータ</param>
+        internal void Set(LogDetailData data) {
+            this.Id = data.Id;
+            this.LogId = data.LogId;
+            this.CategoryId = data.CategoryId;
+            this.Priority = data.Priority;
+            this.Result = (int)data.Result;
+            this.Todo = data.Todo;
+            this.PlanStart = data.PlanStart;
+            this.PlanEnd = data.PlanEnd;
+            this.PlanTime = data.PlanTime;
+            this.ActualStart = data.ActualStart;
+            this.ActualEnd = data.ActualEnd;
+            this.ActualTime = data.ActualTime;
+            this.Memo = data.Memo;
         }
         #endregion
 

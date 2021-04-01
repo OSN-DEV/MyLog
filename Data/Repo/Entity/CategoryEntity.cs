@@ -133,6 +133,18 @@ namespace MyLog.Data.Repo.Entity {
         }
 
         /// <summary>
+        /// 可視設定が有効なデータを取得
+        /// </summary>
+        /// <returns></returns>
+        internal Recordset SelectVisible() {
+            var sql = new SqlBuilder();
+            sql.AppendSql($"SELECT * FROM {TableName}")
+                .AppendSql($"WHERE {Cols.Visible} = 1")
+                .AppendSql($"ORDER BY {Cols.Priority}");
+            return base.Database.OpenRecordset(sql);
+        }
+
+        /// <summary>
         /// データモデルの情報をメンバーに設定する。
         /// </summary>
         /// <param name="data">データモデル</param>

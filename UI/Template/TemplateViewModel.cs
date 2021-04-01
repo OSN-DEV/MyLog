@@ -19,6 +19,18 @@ namespace MyLog.UI.Template {
 
         #region Public Property
         /// <summary>
+        /// 現在の行
+        /// </summary>
+        private int _currentIndex = 0;
+        public int CurrentIndex {
+            get { return this._currentIndex; }
+            set {
+                base.SetProperty(ref this._currentIndex, value);
+            }
+        }
+
+
+        /// <summary>
         /// リスト情報
         /// </summary>
         private TemplateData _templateData = new TemplateData();
@@ -171,9 +183,9 @@ namespace MyLog.UI.Template {
         /// <summary>
         /// ドロップイベント
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void DropDone() {
+        /// <param name="newIndex"></param>
+        public void DropDone(int newIndex) {
+            this.TemplateData.LogList[newIndex].CategoryId = this.TemplateData.LogList[newIndex-1].CategoryId;
             this.SetPriority();
         }
         #endregion

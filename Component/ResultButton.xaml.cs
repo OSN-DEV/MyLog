@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MyLog.Component {
     /// <summary>
@@ -32,6 +33,11 @@ namespace MyLog.Component {
         }
         #endregion
 
+        #region Public Event
+        public delegate void ResultChangedHandle(long id, short result);
+        public event ResultChangedHandle ResultChanged;
+        #endregion
+
         #region Public Property
         static ResultButton() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ResultButton), new FrameworkPropertyMetadata(typeof(ResultButton)));
@@ -49,11 +55,6 @@ namespace MyLog.Component {
                 SetValue(ResultStatusProperty, value);
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyChange(PropertyChangedEventArgs e) {
-            PropertyChanged?.Invoke(this, e);
-        }
         #endregion
 
         #region Event
@@ -69,6 +70,7 @@ namespace MyLog.Component {
                     this.ResultStatus = ResultState.None;
                     break;
             }
+            this.ResultChanged(long.Parse(this.Tag.ToString()), (short)this.ResultStatus);
         }
         #endregion
 

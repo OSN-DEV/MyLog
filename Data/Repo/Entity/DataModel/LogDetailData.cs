@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using static MyLog.Component.ResultButton;
 
 namespace MyLog.Data.Repo.Entity.DataModel {
     /// <summary>
@@ -13,6 +14,11 @@ namespace MyLog.Data.Repo.Entity.DataModel {
         public long Id { set; get; }
 
         /// <summary>
+        /// ログID
+        /// </summary>
+        public long LogId { set; get; }
+
+        /// <summary>
         /// カテゴリID
         /// </summary>
         public long CategoryId { set; get; }
@@ -25,7 +31,7 @@ namespace MyLog.Data.Repo.Entity.DataModel {
         /// <summary>
         /// 結果
         /// </summary>
-        public int Result { set; get; }
+        public ResultState Result { set; get; }
 
         /// <summary>
         /// Todo

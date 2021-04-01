@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using static MyLog.Component.ResultButton;
 
 namespace MyLog.Data.Repo {
     /// <summary>
@@ -20,6 +21,8 @@ namespace MyLog.Data.Repo {
         /// <returns>取得結果(該当情報が存在しない場合はnullを返却)</returns>
         internal LogData SelectByRecordedOn(string recordedOn) {
             LogData result = null;
+            var startIndex = 0;
+
             using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
                 database.Open();
 
@@ -33,15 +36,15 @@ namespace MyLog.Data.Repo {
                     logId = recset.GetInt(LogEntity.Cols.Id);
                 }
                 result = new LogData {
+                    Id = logId,
                     RecordedOn = recordedOn,
-                    LogList = new System.Collections.ObjectModel.ObservableCollection<LogDetailData>()
+                    LogList = new ObservableCollection<LogDetailData>()
                 };
-
 
                 // カテゴリ情報を取得
                 var categories = new Dictionary<long, string>();
                 var categoryEntity = new CategoryEntity(database);
-                using (var recset = categoryEntity.Select()) {
+                using (var recset = categoryEntity.SelectVisible()) {
                     while(recset.Read()) {
                         categories.Add(recset.GetLong(CategoryEntity.Cols.Id),
                                         recset.GetString(CategoryEntity.Cols.Name));
@@ -55,8 +58,11 @@ namespace MyLog.Data.Repo {
                     while (recset.Read()) {
                         var detail = new LogDetailData {
                             Id = recset.GetLong(LogDetailEntity.Cols.Id),
+                            LogId = recset.GetLong(LogDetailEntity.Cols.LogId),
                             CategoryId = recset.GetLong(LogDetailEntity.Cols.CategoryId),
                             Priority = recset.GetInt(LogDetailEntity.Cols.Priority),
+                            Result = (ResultState)recset.GetInt(LogDetailEntity.Cols.Result),
+                            Todo = recset.GetString(LogDetailEntity.Cols.Todo),
                             PlanStart = recset.GetString(LogDetailEntity.Cols.PlanStart),
                             PlanEnd = recset.GetString(LogDetailEntity.Cols.PlanEnd),
                             PlanTime = recset.GetInt(LogDetailEntity.Cols.PlanTime),
@@ -69,24 +75,35 @@ namespace MyLog.Data.Repo {
                         detail.IsCategory = false;
 
                         if (currentCategory != detail.CategoryId) {
-                            for (var i = 0; i < categories.Count; i++) {
+                            for (var i = startIndex; i < categories.Count; i++) {
                                 var categoryId = categories.ElementAt(i).Key;
-                                if (currentCategory < categoryId && categoryId <= detail.CategoryId) {
-                                    var category = new LogDetailData {
-                                        IsCategory = true,
-                                        CategoryId = categoryId,
-                                        CategoryName = categories[categoryId]
-                                    };
-                                    result.LogList.Add(category);
+                                var category = new LogDetailData {
+                                    IsCategory = true,
+                                    CategoryId = categoryId,
+                                    CategoryName = categories[categoryId]
+                                };
+                                result.LogList.Add(category);
+                                if (categoryId == detail.CategoryId) {
                                     currentCategory = categoryId;
+                                    startIndex = i + 1;
+                                    break;
                                 }
+                                currentCategory = categoryId;
                             }
                         }
                         result.LogList.Add(detail);
                     }
 
-                    for (var i = currentCategory + 1; i < categories.Count; i++) {
-                        var categoryId = categories.ElementAt((int)i).Key;
+                    startIndex = -1;
+                    for (var i = 0; i < categories.Count; i++) {
+                        if (currentCategory == categories.ElementAt((int)i).Key) {
+                            startIndex = i;
+                            break;
+                        }
+                    }
+
+                    for (var i = startIndex + 1; i < categories.Count; i++) {
+                        var categoryId = categories.ElementAt(i).Key;
                         if (currentCategory < categoryId) {
                             var category = new LogDetailData {
                                 IsCategory = true,
@@ -171,7 +188,6 @@ namespace MyLog.Data.Repo {
         /// <param name="recordedOn">日付</param>
         /// <returns></returns>
         internal LogData CreateLog(string recordedOn) {
-            var result = new LogData();
 
             using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
                 database.Open();
@@ -183,7 +199,6 @@ namespace MyLog.Data.Repo {
                         return CreateEmptyLog(recordedOn);              
                     }
                     templateId = recset.GetLong(TemplateEntity.Cols.Id);
-                    result.RecordedOn = recordedOn;
                 }
 
                 try {
@@ -191,11 +206,10 @@ namespace MyLog.Data.Repo {
                     var logEntity = new LogEntity(database) {
                         RecordedOn = recordedOn
                     };
-                    result.Id = logEntity.Insert();
-
+                    var id = logEntity.Insert();
 
                     var templateDetailEntity = new TemplateDetailEntity(database);
-                    templateDetailEntity.InsertToLog(templateId, result.Id);
+                    templateDetailEntity.InsertToLog(templateId, id);
                     database.CommitTrans();
                 } catch (Exception ex) {
                     database.RollbackTrans();
@@ -203,34 +217,62 @@ namespace MyLog.Data.Repo {
                 }
             }
 
-
             return this.SelectByRecordedOn(recordedOn);
         }
 
         /// <summary>
         /// 空行を作成する
         /// </summary>
-        /// <param name="logHId">ログ情報ID</param>
+        /// <param name="logId">ログ情報ID</param>
         /// <param name="categoryId">カテゴリID</param>
         /// <param name="order">並び順</param>
         /// <returns></returns>
-        internal LogDetailData InsertEmptyRow(long logHId, long categoryId, int order) {
+        internal LogDetailData InsertEmptyRow(long logId, long categoryId, int order) {
             var result = new LogDetailData();
             using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+                database.Open();
                 database.BeginTrans();
 
                 var entity = new LogDetailEntity(database) {
-                    LogHId = logHId,
+                    LogId = logId,
                     CategoryId = categoryId,
                     Priority = order
                 };
-                entity.Insert();
-                database.CommitTrans();
                 result.Id = entity.Insert();
+                result.LogId = logId;
                 result.CategoryId = categoryId;
                 result.Priority = order;
+                database.CommitTrans();
             }
             return result;
+        }
+
+        /// <summary>
+        /// IDをキーとして並び順・カテゴリIDを更新する
+        /// </summary>
+        /// <param name="logList">ログデータ</param>
+        internal void UpdateOrderById(ObservableCollection<LogDetailData> logList) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+                try {
+                    database.Open();
+                    database.BeginTrans();
+                    var entity = new LogDetailEntity(database);
+
+                    foreach (var data in logList) {
+                        if (data.IsCategory) {
+                            continue;
+                        }
+                        entity.ClearParams();
+                        entity.AddParams(LogDetailEntity.Cols.Priority, data.Priority);
+                        entity.AddParams(LogDetailEntity.Cols.CategoryId, data.CategoryId);
+                        entity.UpdateById(data.Id);
+                    }
+                    database.CommitTrans();
+                }catch(Exception ex) {
+                    database.RollbackTrans();
+                    throw ex;
+                }
+            }
         }
 
         /// <summary>
@@ -269,57 +311,17 @@ namespace MyLog.Data.Repo {
         }
 
         /// <summary>
-        /// IDをキーとして予定時間(開始)を更新する
-        /// </summary>
-        /// <param name="id">ID</param>
-        /// <param name="planStart">予定時間(開始)</param>
-        internal void UpdatePlanStartById(long id, string planStart) {
-            var entity = new LogDetailEntity();
-            entity.AddParams(LogDetailEntity.Cols.Result, planStart);
-            this.UpdateLogDById(id, entity);
-        }
-
-        /// <summary>
-        /// IDをキーとして予定時間(終了)を更新する
-        /// </summary>
-        /// <param name="id">ID</param>
-        /// <param name="planEnd">予定時間(終了)</param>
-        internal void UpdatePlanEndById(long id, string planEnd) {
-            var entity = new LogDetailEntity();
-            entity.AddParams(LogDetailEntity.Cols.Result, planEnd);
-            this.UpdateLogDById(id, entity);
-        }
-
-        /// <summary>
         /// IDをキーとして予定時間を更新する
         /// </summary>
         /// <param name="id">ID</param>
+        /// <param name="planStart">予定時間(開始)</param>
+        /// <param name="planEnd">予定時間(終了)</param>
         /// <param name="planTime">予定時間</param>
-        internal void UpdatePlanTimeById(long id, int planTime) {
+        internal void UpdatePlanTimeById(long id, string planStart, string planEnd, int planTime) {
             var entity = new LogDetailEntity();
-            entity.AddParams(LogDetailEntity.Cols.Result, planTime);
-            this.UpdateLogDById(id, entity);
-        }
-
-        /// <summary>
-        /// IDをキーとして実績時間(開始)を更新する
-        /// </summary>
-        /// <param name="id">ID</param>
-        /// <param name="actualStart">実績時間(開始)</param>
-        internal void UpdateActualStartById(long id, string actualStart) {
-            var entity = new LogDetailEntity();
-            entity.AddParams(LogDetailEntity.Cols.Result, actualStart);
-            this.UpdateLogDById(id, entity);
-        }
-
-        /// <summary>
-        /// IDをキーとして実績時間(終了)を更新する
-        /// </summary>
-        /// <param name="id">ID</param>
-        /// <param name="actualEnd">実績時間(終了)</param>
-        internal void UpdateActualEndById(long id, string actualEnd) {
-            var entity = new LogDetailEntity();
-            entity.AddParams(LogDetailEntity.Cols.Result, actualEnd);
+            entity.AddParams(LogDetailEntity.Cols.PlanStart, planStart);
+            entity.AddParams(LogDetailEntity.Cols.PlanEnd, planEnd);
+            entity.AddParams(LogDetailEntity.Cols.PlanTime, planTime);
             this.UpdateLogDById(id, entity);
         }
 
@@ -327,12 +329,82 @@ namespace MyLog.Data.Repo {
         /// IDをキーとして実績時間を更新する
         /// </summary>
         /// <param name="id">ID</param>
+        /// <param name="actualStart">実績時間(開始)</param>
+        /// <param name="actualEnd">実績時間(終了)</param>
         /// <param name="actualTime">実績時間</param>
-        internal void UpdateActuralTimeById(long id, int actualTime) {
+        internal void UpdateActualTimeById(long id, string actualStart, string actualEnd, int actualTime) {
             var entity = new LogDetailEntity();
-            entity.AddParams(LogDetailEntity.Cols.Result, actualTime);
+            entity.AddParams(LogDetailEntity.Cols.ActualStart, actualStart);
+            entity.AddParams(LogDetailEntity.Cols.ActualEnd, actualEnd);
+            entity.AddParams(LogDetailEntity.Cols.ActualTime, actualTime);
             this.UpdateLogDById(id, entity);
         }
+
+        ///// <summary>
+        ///// IDをキーとして予定時間(開始)を更新する
+        ///// </summary>
+        ///// <param name="id">ID</param>
+        ///// <param name="planStart">予定時間(開始)</param>
+        //internal void UpdatePlanStartById(long id, string planStart) {
+        //    var entity = new LogDetailEntity();
+        //    entity.AddParams(LogDetailEntity.Cols.Result, planStart);
+        //    this.UpdateLogDById(id, entity);
+        //}
+
+        ///// <summary>
+        ///// IDをキーとして予定時間(終了)を更新する
+        ///// </summary>
+        ///// <param name="id">ID</param>
+        ///// <param name="planEnd">予定時間(終了)</param>
+        //internal void UpdatePlanEndById(long id, string planEnd) {
+        //    var entity = new LogDetailEntity();
+        //    entity.AddParams(LogDetailEntity.Cols.Result, planEnd);
+        //    this.UpdateLogDById(id, entity);
+        //}
+
+        ///// <summary>
+        ///// IDをキーとして予定時間を更新する
+        ///// </summary>
+        ///// <param name="id">ID</param>
+        ///// <param name="planTime">予定時間</param>
+        //internal void UpdatePlanTimeById(long id, int planTime) {
+        //    var entity = new LogDetailEntity();
+        //    entity.AddParams(LogDetailEntity.Cols.Result, planTime);
+        //    this.UpdateLogDById(id, entity);
+        //}
+
+        ///// <summary>
+        ///// IDをキーとして実績時間(開始)を更新する
+        ///// </summary>
+        ///// <param name="id">ID</param>
+        ///// <param name="actualStart">実績時間(開始)</param>
+        //internal void UpdateActualStartById(long id, string actualStart) {
+        //    var entity = new LogDetailEntity();
+        //    entity.AddParams(LogDetailEntity.Cols.Result, actualStart);
+        //    this.UpdateLogDById(id, entity);
+        //}
+
+        ///// <summary>
+        ///// IDをキーとして実績時間(終了)を更新する
+        ///// </summary>
+        ///// <param name="id">ID</param>
+        ///// <param name="actualEnd">実績時間(終了)</param>
+        //internal void UpdateActualEndById(long id, string actualEnd) {
+        //    var entity = new LogDetailEntity();
+        //    entity.AddParams(LogDetailEntity.Cols.Result, actualEnd);
+        //    this.UpdateLogDById(id, entity);
+        //}
+
+        ///// <summary>
+        ///// IDをキーとして実績時間を更新する
+        ///// </summary>
+        ///// <param name="id">ID</param>
+        ///// <param name="actualTime">実績時間</param>
+        //internal void UpdateActuralTimeById(long id, int actualTime) {
+        //    var entity = new LogDetailEntity();
+        //    entity.AddParams(LogDetailEntity.Cols.Result, actualTime);
+        //    this.UpdateLogDById(id, entity);
+        //}
 
         /// <summary>
         /// IDをキーとしてメモを更新する
@@ -341,8 +413,27 @@ namespace MyLog.Data.Repo {
         /// <param name="memo">メモ</param>
         internal void UpdateMemoById(long id, string memo) {
             var entity = new LogDetailEntity();
-            entity.AddParams(LogDetailEntity.Cols.Result, memo);
+            entity.AddParams(LogDetailEntity.Cols.Memo, memo);
             this.UpdateLogDById(id, entity);
+        }
+
+        /// <summary>
+        /// IDをキーとして削除する
+        /// </summary>
+        /// <param name="id">ID</param>
+        internal void DeleteById(long id) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+                try {
+                    database.Open();
+                    database.BeginTrans();
+                    var entity = new LogDetailEntity(database);
+                    entity.DeleteById(id);
+                    database.CommitTrans();
+                } catch (Exception ex) {
+                    database.RollbackTrans();
+                    throw ex;
+                }
+            }
         }
         #endregion
 
@@ -354,10 +445,16 @@ namespace MyLog.Data.Repo {
         /// <param name="entity">エンティティ</param>
         private void UpdateLogDById(long id, LogDetailEntity entity) {
             using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
-                database.BeginTrans();
-                entity.Database = database;
-                entity.UpdateById(id);
-                database.CommitTrans();
+                try {
+                    database.Open();
+                    database.BeginTrans();
+                    entity.Database = database;
+                    entity.UpdateById(id);
+                    database.CommitTrans();
+                } catch(Exception ex) {
+                    database.RollbackTrans();
+                    throw ex;
+                }
             }
         }
         #endregion

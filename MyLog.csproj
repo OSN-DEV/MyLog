@@ -135,7 +135,7 @@
     <Compile Include="UI\Main\MyLogMainWindow.xaml.cs">
       <DependentUpon>MyLogMainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Main\MyLogViewModel.cs" />
+    <Compile Include="UI\Main\MyLogMainViewModel.cs" />
     <Compile Include="UI\Template\TemplateViewModel.cs" />
     <Compile Include="UI\Template\TemplateWindow.xaml.cs">
       <DependentUpon>TemplateWindow.xaml</DependentUpon>

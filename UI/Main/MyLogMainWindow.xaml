@@ -31,8 +31,8 @@
             <c:IconButton IconImage="{StaticResource NextDay}" MyCommand="{Binding NextDayCommand}"/>
             <c:IconButton IconImage="{StaticResource Calendar}" Margin="5,0,0,0" MyCommand="{Binding CalendarCommand}"/>
 
-            <c:IconButton IconImage="{StaticResource NewTodo}" Margin="15,0,0,0" MyCommand="{Binding NewTodoCommand}" ToolTip="テンプレートからログを作成"/>
-            <c:IconButton IconImage="{StaticResource EmptyTodo}" Margin="3,0,0,0" MyCommand="{Binding EmptyTodoCommand}" ToolTip="空のログを作成"/>
+            <c:IconButton IconImage="{StaticResource NewTodo}" Margin="15,0,0,0" MyCommand="{Binding NewTodoCommand}" ToolTip="テンプレートからログを作成" IsEnabled="{Binding NoData}"/>
+            <c:IconButton IconImage="{StaticResource EmptyTodo}" Margin="3,0,0,0" MyCommand="{Binding EmptyTodoCommand}" ToolTip="空のログを作成" IsEnabled="{Binding NoData}"/>
             
             <c:IconButton IconImage="{StaticResource EditTemplate}" Margin="15,0,0,0" MyCommand="{Binding EditTemplateCommand}" ToolTip="テンプレート編集"/>
             <c:IconButton IconImage="{StaticResource EditCategory}" Margin="10,0,0,0" MyCommand="{Binding EditCategoryCommand}" ToolTip="カテゴリ編集"/>
@@ -54,21 +54,20 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Foreground="White" Text="{Binding CategoryName}" Style="{StaticResource BasicTextBlock}" Margin="10,0,0,0" />
 
-                            <c:IconButton IconImage="{StaticResource Add}" Width="20" Height="20" HorizontalAlignment="Right"/>
-                            
-                            <!--<Button Grid.Column="1" Content="+" Width="30" HorizontalAlignment="Right" 
-                                    Command="{Binding DataContext.OnAddTodoClick, 
-                                RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding id}" />-->
+                            <c:IconButton IconImage="{StaticResource Add}" Width="20" Height="20" HorizontalAlignment="Right"
+                                        MyCommand="{Binding DataContext.AddLogCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        MyCommandParam ="{Binding CategoryId}"/>
                         </Grid>
 
                         <StackPanel Orientation="Horizontal" Visibility="{Binding LogVisibility}">
-                            <c:ResultButton Width="16" Height="16" ResultStatus="{Binding Result}" Margin="1,0,0,0" />
-                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Todo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" />
+                            <c:ResultButton Width="16" Height="16" ResultStatus="{Binding Result}" Margin="1,0,0,0" Tag="{Binding Id}" ResultChanged="ResultChanged" />
+                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Todo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" TextValueChanged="TodoTextValueChanged" Tag="{Binding Id}"/>
 
                             <c:TimeSpanText 
                                 StartTime="{Binding PlanStart, Mode=TwoWay}"
                                 EndTime="{Binding PlanEnd, Mode=TwoWay}"
-                                Span="{Binding PlanTime, Mode=TwoWay}" />
+                                Span="{Binding PlanTime, Mode=TwoWay}"  Tag="{Binding Id}"
+                                TimeDataChanged="StartTime_TimeDataChanged"/>
 
                             <TextBlock Width="8"/>
 
@@ -76,11 +75,14 @@
                             <c:TimeSpanText 
                                 StartTime="{Binding ActualStart, Mode=TwoWay}"
                                 EndTime="{Binding ActualEnd, Mode=TwoWay}"
-                                Span="{Binding ActualTime, Mode=TwoWay}" />
-                            
-                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Memo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3"/>
+                                Span="{Binding ActualTime, Mode=TwoWay}"  Tag="{Binding Id}"
+                                TimeDataChanged="EndTime_TimeDataChanged"/>
 
-                            <c:IconButton IconImage="{StaticResource DeleteTodo}" Width="20" Height="20"  Margin="1,0" />
+                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Memo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3" TextValueChanged="CustomTextBox_TextValueChanged"  Tag="{Binding Id}"/>
+
+                            <c:IconButton IconImage="{StaticResource DeleteTodo}" Width="20" Height="20"  Margin="1,0"
+                                          MyCommand="{Binding DataContext.DeleteTodoCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          MyCommandParam ="{Binding Priority}"/>
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
