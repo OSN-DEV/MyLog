@@ -65,7 +65,7 @@ namespace MyLog.Data.Repo {
                             Todo = recset.GetString(LogDetailEntity.Cols.Todo),
                             PlanStart = recset.GetString(LogDetailEntity.Cols.PlanStart),
                             PlanEnd = recset.GetString(LogDetailEntity.Cols.PlanEnd),
-                            PlanTime = recset.GetInt(LogDetailEntity.Cols.PlanTime),
+                            PlanTime = recset.GetInt(LogDetailEntity.Cols.PlanTime).ToString(),
                             ActualStart = recset.GetString(LogDetailEntity.Cols.ActualStart),
                             ActualEnd = recset.GetString(LogDetailEntity.Cols.ActualEnd),
                             ActualTime = recset.GetInt(LogDetailEntity.Cols.ActualTime).ToString(),

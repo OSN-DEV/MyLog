@@ -54,7 +54,7 @@ namespace MyLog.Data.Repo.Entity.DataModel {
         /// <summary>
         /// 予定時間
         /// </summary>
-        public int PlanTime { set; get; }
+        public string PlanTime { set; get; }
 
         /// <summary>
         /// 実績時間(開始)

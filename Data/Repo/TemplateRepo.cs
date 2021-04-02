@@ -110,8 +110,9 @@ namespace MyLog.Data.Repo {
         /// </summary>
         /// <returns>空のテンプレートデータ</returns>
         internal TemplateData CreateEmptyTemplate() {
-            var result = new TemplateData();
-            result.LogList = new ObservableCollection<TemplateDetailData>();
+            var result = new TemplateData() {
+                LogList = new ObservableCollection<TemplateDetailData>()
+            };
             using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
                 database.Open();
                 var categoryEntity = new CategoryEntity(database);
@@ -219,7 +220,7 @@ namespace MyLog.Data.Repo {
                         Todo = recset.GetString(LogDetailEntity.Cols.Todo),
                         PlanStart = recset.GetString(LogDetailEntity.Cols.PlanStart),
                         PlanEnd = recset.GetString(LogDetailEntity.Cols.PlanEnd),
-                        PlanTime = recset.GetInt(LogDetailEntity.Cols.PlanTime),
+                        PlanTime = recset.GetInt(LogDetailEntity.Cols.PlanTime).ToString(),
                     };
                     detail.IsCategory = false;
 

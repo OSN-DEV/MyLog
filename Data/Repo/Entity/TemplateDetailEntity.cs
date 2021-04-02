@@ -70,7 +70,7 @@ namespace MyLog.Data.Repo.Entity {
         /// <summary>
         /// 予定時間
         /// </summary>
-        internal int PlanTime { set; get; }
+        internal string PlanTime { set; get; }
         #endregion
 
         #region Constructor
@@ -185,7 +185,11 @@ namespace MyLog.Data.Repo.Entity {
             this.Todo = data.Todo;
             this.PlanStart = data.PlanStart;
             this.PlanEnd = data.PlanEnd;
-            this.PlanTime = data.PlanTime;
+            if ("" == data.PlanTime) {
+                this.PlanTime = "0";
+            } else {
+                this.PlanTime = data.PlanTime;
+            }
         }
 
         /// <summary>
