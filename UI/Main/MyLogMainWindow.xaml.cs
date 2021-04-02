@@ -10,7 +10,7 @@ namespace MyLog.UI.Main {
     public partial class MyLogMainWindow : Window {
 
         #region Declaration
-        private MyLogMainViewModel _viewModel;
+        private readonly MyLogMainViewModel _viewModel;
         #endregion
 
         #region Constructor

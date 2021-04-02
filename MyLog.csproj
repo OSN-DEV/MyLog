@@ -131,7 +131,6 @@
       <DependentUpon>Proto.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\ListViewProto\ProtoViewModel.cs" />
-    <Compile Include="UI\ListViewProto\ReorderableItemsControlBehavior.cs" />
     <Compile Include="UI\Main\MyLogMainWindow.xaml.cs">
       <DependentUpon>MyLogMainWindow.xaml</DependentUpon>
     </Compile>

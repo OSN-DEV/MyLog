@@ -13,7 +13,7 @@ namespace MyLog.UI.Main {
     internal class MyLogMainViewModel : BaseBindable {
 
         #region Declaration
-        private MyLogMainWindow _window;
+        private readonly MyLogMainWindow _window;
         private const string DateFormat = "yyyy/MM/dd";
         #endregion
 
@@ -96,11 +96,6 @@ namespace MyLog.UI.Main {
         /// ログ追加コマンド
         /// </summary>
         public DelegateCommandWithParam<long> AddLogCommand { set; get; }
-
-        /// <summary>
-        /// 結果コマンド
-        /// </summary>
-        public DelegateCommandWithParam<int> ResultCommand { set; get; }
 
         /// <summary>
         /// Todo削除コマンド
@@ -322,19 +317,6 @@ namespace MyLog.UI.Main {
             this.SetPriority();
         }
 
-
-        private void ResultClick(int priority) {
-            // Priorityは一意なので
-            foreach (var (log, index) in this.LogData.LogList.Select((log, index) => (log, index))) {
-                if (priority == log.Priority) {
-                    //var repo = new MyLogRepo();
-                    //repo.DeleteById(log.Id);
-                    //this.LogData.LogList.Remove(log);
-                    return;
-                }
-            }
-        }
-
         /// <summary>
         /// Todo削除クリック
         /// </summary>
@@ -366,7 +348,6 @@ namespace MyLog.UI.Main {
             this.EditCategoryCommand = new DelegateCommand(EditCategoryClick, () => true);
             this.EditTemplateCommand = new DelegateCommand(EditTemplateClick, () => true);
             this.AddLogCommand = new DelegateCommandWithParam<long>(AddLogClick);
-            this.ResultCommand = new DelegateCommandWithParam<int>(ResultClick);
             this.DeleteTodoCommand = new DelegateCommandWithParam<int>(DeleteTodoClick);
 
             // 初期データを表示
@@ -394,21 +375,5 @@ namespace MyLog.UI.Main {
             repo.UpdateOrderById(this.LogData.LogList);
         }
         #endregion
-
-        //|10|Todo追加ボタン||
-        //||並び替えボタン||
-        //|11|完了チェックボタン||
-        //|12|Todoテキスト||
-        //|13|予定時刻(開始)テキスト||
-        //|14|予定時刻(終了)テキスト||
-        //|15|予定時間テキスト||
-        //|16|実績時刻(開始)テキスト||
-        //|17|実績時刻(開始)設定ボタン||
-        //|18|実績時刻(終了)テキスト||
-        //|19|実績時刻(終了)設定ボタン||
-        //|20|実績時間テキスト||
-        //|21|メモテキスト||
-        //|22|コンテキストメニュー ||
-        //|23|未割当Todoリスト||
     }
 }
