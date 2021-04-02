@@ -57,9 +57,10 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{Binding SearchPanelVisibility}" Margin="0,0,0,5">
             <ComboBox Width="250" SelectedIndex="{Binding TemplateIndex}" ItemsSource="{Binding TemplateNameList}"/>
-            <c:IconButton IconImage="{StaticResource Add}" Margin="10,0,0,0" MyCommand="{Binding AddTemplateCommand}"/>
-            <c:IconButton IconImage="{StaticResource Edit}" Margin="15,0,0,0" IsEnabled="{Binding IsEnabledEdit}" MyCommand="{Binding EditTemplateCommand}"/>
-            <c:IconButton IconImage="{StaticResource Delete}" Margin="3,0,0,0" IsEnabled="{Binding IsEnabledEdit}" MyCommand="{Binding DeleteTemplateCommand}"/>
+            <c:IconButton IconImage="{StaticResource Add}" Margin="10,0,0,0" MyCommand="{Binding AddTemplateCommand}" ToolTip="新規テンプレートを作成"/>
+            <c:IconButton IconImage="{StaticResource SelectTemplate}" Margin="10,0,0,0" MyCommand="{Binding SelectTemplateCommand}" ToolTip="既存のテンプレートから新規テンプレートを作成"/>
+            <c:IconButton IconImage="{StaticResource Edit}" Margin="15,0,0,0" IsEnabled="{Binding IsEnabledEdit}" MyCommand="{Binding EditTemplateCommand}" ToolTip="テンプレートを編集"/>
+            <c:IconButton IconImage="{StaticResource Delete}" Margin="15,0,0,0" IsEnabled="{Binding IsEnabledEdit}" MyCommand="{Binding DeleteTemplateCommand}" ToolTip="テンプレートを削除"/>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Visibility="{Binding EditHeaderPanelVisiblity}">

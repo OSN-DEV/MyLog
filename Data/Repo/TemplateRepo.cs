@@ -61,6 +61,52 @@ namespace MyLog.Data.Repo {
         }
 
         /// <summary>
+        /// IDをキーとしてテンプレート情報を取得する。
+        /// </summary>
+        /// <param name="templateId">ID</param>
+        /// <returns>テンプレート情報</returns>
+        internal TemplateData SelectByTemplateId(long templateId) {
+            TemplateData result = null;
+            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+                database.Open();
+
+                // カテゴリ情報を取得
+                var categoryEntity = new CategoryEntity(database);
+                var categories = new Dictionary<long, string>();
+                using (var recset = categoryEntity.SelectVisible()) {
+                    while (recset.Read()) {
+                        categories.Add(recset.GetLong(CategoryEntity.Cols.Id),
+                                        recset.GetString(CategoryEntity.Cols.Name));
+                    }
+                }
+
+                var headerEntity = new TemplateEntity(database);
+                var detailEntity = new TemplateDetailEntity(database);
+                using (var recset = headerEntity.SelectById(templateId)) {
+                    if (recset.Read()) {
+                        // ヘッダ情報を取得
+                        result = new TemplateData {
+                            Id = recset.GetLong(TemplateEntity.Cols.Id),
+                            Name = recset.GetString(TemplateEntity.Cols.Name),
+                            Sun = recset.GetBool(TemplateEntity.Cols.Sun),
+                            Mon = recset.GetBool(TemplateEntity.Cols.Mon),
+                            Tue = recset.GetBool(TemplateEntity.Cols.Tue),
+                            Wed = recset.GetBool(TemplateEntity.Cols.Wed),
+                            Thu = recset.GetBool(TemplateEntity.Cols.Thu),
+                            Fri = recset.GetBool(TemplateEntity.Cols.Fri),
+                            Sat = recset.GetBool(TemplateEntity.Cols.Sat),
+                            LogList = new ObservableCollection<TemplateDetailData>()
+                        };
+
+                        // 明細情報を取得
+                        SelectDetailByTemplateId(result.LogList, detailEntity, templateId, categories);
+                    }
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 空のテンプレート情報を作成する
         /// </summary>
         /// <returns>空のテンプレートデータ</returns>

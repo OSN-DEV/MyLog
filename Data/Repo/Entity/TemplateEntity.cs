@@ -192,8 +192,21 @@ namespace MyLog.Data.Repo.Entity {
         internal Recordset Select() {
             var sql = new SqlBuilder();
             sql.AppendSql($"SELECT * FROM {TableName}")
-                .AppendSql($"ORDER BY {Cols.Id}");
+                .AppendSql($"ORDER BY {Cols.Name}, {Cols.Id}");
             return base.Database.OpenRecordset(sql);
+        }
+
+        /// <summary>
+        /// IDをキーとしてテンプレート情報(ヘッダ)を取得する
+        /// </summary>
+        /// <returns></returns>
+        internal Recordset SelectById(long id) {
+            var sql = new SqlBuilder();
+            sql.AppendSql($"SELECT * FROM {TableName}")
+                .AppendSql($"WHERE {Cols.Id} = @{Cols.Id}");
+            var paramList = new ParameterList();
+            paramList.Add($"@{Cols.Id}", id);
+            return base.Database.OpenRecordset(sql, paramList);
         }
 
         /// <summary>

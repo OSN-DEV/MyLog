@@ -1,6 +1,7 @@
 ﻿using MyLog.AppCommon;
 using MyLog.Data.Repo;
 using MyLog.Data.Repo.Entity.DataModel;
+using MyLog.UI.TemplateSelect;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -127,6 +128,11 @@ namespace MyLog.UI.Template {
         public DelegateCommand AddTemplateCommand { set; get; }
 
         /// <summary>
+        /// 既存のテンプレートから追加コマンド
+        /// </summary>
+        public DelegateCommand SelectTemplateCommand { set; get; }
+
+        /// <summary>
         /// テンプレート編集コマンド
         /// </summary>
         public DelegateCommand EditTemplateCommand { set; get; }
@@ -202,6 +208,25 @@ namespace MyLog.UI.Template {
             this.Name = "";
             var repo = new TemplateRepo();
             this.TemplateData = repo.CreateEmptyTemplate();
+        }
+
+        /// <summary>
+        /// 既存のテンプレートから追加クリック時の処理
+        /// </summary>
+        private void SelectTemplateClick() {
+            var window = new TemplateSelectWindow() {
+                Owner = this._window
+            };
+            if (true != window.ShowDialog()) {
+                return;
+            }
+            this.EditMode = true;
+            this._isNew = true;
+            this._window.cTemplateName.Focus();
+
+            this.Name = "";
+            var repo = new TemplateRepo();
+            this.TemplateData = repo.SelectByTemplateId(window.SelectedTemplateId);
         }
 
         /// <summary>
@@ -308,6 +333,7 @@ namespace MyLog.UI.Template {
         private void Initialize() {
             // コマンドを設定
             this.AddTemplateCommand = new DelegateCommand(AddTemplateClick);
+            this.SelectTemplateCommand = new DelegateCommand(SelectTemplateClick);
             this.EditTemplateCommand = new DelegateCommand(EditTemplateClick);
             this.DeleteTemplateCommand = new DelegateCommand(DeleteTemplateClick);
             this.SaveTemplateCommand = new DelegateCommand(SaveTemplateClick);
