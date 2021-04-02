@@ -187,20 +187,34 @@ namespace MyLog.Data.Repo {
         /// </summary>
         /// <param name="recordedOn">日付</param>
         /// <returns></returns>
-        internal LogData CreateLog(string recordedOn) {
-
+        internal LogData CreateLogByRecordedOn(string recordedOn) {
+            long templateId;
             using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
                 database.Open();
                 var templateEntity = new TemplateEntity(database);
-                long templateId;
                 using (var recset = templateEntity.SelectByWeekDay(recordedOn)) {
                     // テンプレートが存在しない場合は空の情報を作成
                     if (!recset.Read()) {
-                        return CreateEmptyLog(recordedOn);              
+                        return CreateEmptyLog(recordedOn);
                     }
                     templateId = recset.GetLong(TemplateEntity.Cols.Id);
                 }
+            }
 
+            return this.CreateLogByTemplateId(templateId, recordedOn);
+        }
+
+
+        /// <summary>
+        /// テンプレートからログを作成する。
+        /// </summary>
+        /// <param name="templateId">テンプレートID</param>
+        /// /// <param name="recordedOn">日付</param>
+        /// <returns></returns>
+        internal LogData CreateLogByTemplateId(long templateId, string recordedOn) {
+
+            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+                database.Open();
                 try {
                     database.BeginTrans();
                     var logEntity = new LogEntity(database) {
@@ -360,8 +374,10 @@ namespace MyLog.Data.Repo {
                 try {
                     database.Open();
                     database.BeginTrans();
-                    var entity = new LogDetailEntity(database);
-                    entity.DeleteById(id);
+                    var eneityHeader = new LogEntity(database);
+                    eneityHeader.DeleteById(id);
+                    var entityDetail = new LogDetailEntity(database);
+                    entityDetail.DeleteById(id);
                     database.CommitTrans();
                 } catch (Exception ex) {
                     database.RollbackTrans();

@@ -3,6 +3,7 @@ using MyLog.Data.Repo;
 using MyLog.Data.Repo.Entity.DataModel;
 using MyLog.UI.Category;
 using MyLog.UI.Template;
+using MyLog.UI.TemplateSelect;
 using System;
 using System.Linq;
 
@@ -46,6 +47,7 @@ namespace MyLog.UI.Main {
             set { 
                 base.SetProperty(ref this._logData, value);
                 base.SetProperty(nameof(NoData));
+                base.SetProperty(nameof(HasData));
             }
             get { return this._logData; }
         }
@@ -56,6 +58,14 @@ namespace MyLog.UI.Main {
         public bool NoData {
             get { return this.LogData == null; }
         }
+
+        /// <summary>
+        /// 該当日のログデータ有無
+        /// </summary>
+        public bool HasData {
+            get { return this.LogData != null; }
+        }
+
 
         /// <summary>
         /// 前日クリック
@@ -78,6 +88,11 @@ namespace MyLog.UI.Main {
         public DelegateCommand NewTodoCommand { set; get; }
 
         /// <summary>
+        /// テンプレートを選択してTODOを作成
+        /// </summary>
+        public DelegateCommand SelectTemplateCommand { set; get; }
+
+        /// <summary>
         /// 空のTODO作成クリック
         /// </summary>
         public DelegateCommand EmptyTodoCommand { set; get; }
@@ -91,6 +106,11 @@ namespace MyLog.UI.Main {
         /// テンプレート編集クリック
         /// </summary>
         public DelegateCommand EditTemplateCommand { set; get; }
+
+        /// <summary>
+        /// 削除コマンド
+        /// </summary>
+        public DelegateCommand DeleteCommand { set; get; }
 
         /// <summary>
         /// ログ追加コマンド
@@ -248,7 +268,25 @@ namespace MyLog.UI.Main {
         private void NewTodoClick() {
             var repo = new MyLogRepo();
             try {
-                this.LogData = repo.CreateLog(this.RecordedOn);
+                this.LogData = repo.CreateLogByRecordedOn(this.RecordedOn);
+            } catch (Exception ex) {
+                Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// テンプレートを選択してTODO作成をクリック
+        /// </summary>
+        private void SelectTemplateClick() {
+            var window = new TemplateSelectWindow() {
+                Owner = this._window
+            };
+            if (true != window.ShowDialog()) {
+                return;
+            }
+            var repo = new MyLogRepo();
+            try {
+                this.LogData = repo.CreateLogByTemplateId(window.SelectedTemplateId, this.RecordedOn);
             } catch (Exception ex) {
                 Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
             }
@@ -288,6 +326,18 @@ namespace MyLog.UI.Main {
             window.ShowDialog();
         }
 
+        /// <summary>
+        /// ログ削除クリック時の処理
+        /// </summary>
+        private void DeleteClick() {
+            try {
+                var repo = new MyLogRepo();
+                repo.DeleteById(this.LogData.Id);
+                this.LogData = null;
+            } catch (Exception ex) {
+                Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
+            }
+        }
 
         /// <summary>
         /// Todo追加クリック時の処理
@@ -343,10 +393,12 @@ namespace MyLog.UI.Main {
             this.PrevDayCommand = new DelegateCommand(PrevDayClick);
             this.NextDayCommand = new DelegateCommand(NextDayClick);
             this.NewTodoCommand = new DelegateCommand(NewTodoClick);
+            this.SelectTemplateCommand = new DelegateCommand(SelectTemplateClick);
             this.EmptyTodoCommand = new DelegateCommand(EmptyTodoClick);
             this.CalendarCommand = new DelegateCommand(CalendarClick);
             this.EditCategoryCommand = new DelegateCommand(EditCategoryClick, () => true);
             this.EditTemplateCommand = new DelegateCommand(EditTemplateClick, () => true);
+            this.DeleteCommand = new DelegateCommand(DeleteClick, () => HasData);
             this.AddLogCommand = new DelegateCommandWithParam<long>(AddLogClick);
             this.DeleteTodoCommand = new DelegateCommandWithParam<int>(DeleteTodoClick);
 

@@ -117,6 +117,7 @@
     <Compile Include="Data\Repo\TemplateRepo.cs" />
     <Compile Include="Data\Repo\MyLogRepo.cs" />
     <Compile Include="Data\Repo\BaseRepo.cs" />
+    <Compile Include="Data\Repo\TemplateSelectRepo.cs" />
     <Compile Include="UI\BaseBindable.cs" />
     <Compile Include="UI\Category\CategoryViewModel.cs" />
     <Compile Include="UI\Category\CategoryWindow.xaml.cs">
@@ -135,6 +136,10 @@
       <DependentUpon>MyLogMainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Main\MyLogMainViewModel.cs" />
+    <Compile Include="UI\TemplateSelect\TemplateSelectViewModel.cs" />
+    <Compile Include="UI\TemplateSelect\TemplateSelectWindow.xaml.cs">
+      <DependentUpon>TemplateSelectWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Template\TemplateViewModel.cs" />
     <Compile Include="UI\Template\TemplateWindow.xaml.cs">
       <DependentUpon>TemplateWindow.xaml</DependentUpon>
@@ -209,6 +214,7 @@
     </Page>
     <Resource Include="Res\BackgroundHover.png" />
     <Resource Include="Res\BackgroundPressed.png" />
+    <Resource Include="Res\SelectTemplate.png" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -237,6 +243,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Main\MyLogMainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\TemplateSelect\TemplateSelectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -7,7 +7,7 @@
         xmlns:c="clr-namespace:MyLog.Component"
         mc:Ignorable="d"
         xmlns:jas="clr-namespace:WPF.JoshSmith.ServiceProviders.UI;assembly=ListViewDragDropManager"
-        Title="自分のログ" Height="600" Width="940" WindowStartupLocation="CenterScreen" >
+        Title="自分のログ" Height="600" Width="940" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
  
     <Window.Resources>
         <ResourceDictionary>
@@ -32,10 +32,14 @@
             <c:IconButton IconImage="{StaticResource Calendar}" Margin="5,0,0,0" MyCommand="{Binding CalendarCommand}"/>
 
             <c:IconButton IconImage="{StaticResource NewTodo}" Margin="15,0,0,0" MyCommand="{Binding NewTodoCommand}" ToolTip="テンプレートからログを作成" IsEnabled="{Binding NoData}"/>
+            <c:IconButton IconImage="{StaticResource SelectTemplate}" Margin="3,0,0,0" MyCommand="{Binding SelectTemplateCommand}" ToolTip="テンプレートを選択してログを作成" IsEnabled="{Binding NoData}"/>
             <c:IconButton IconImage="{StaticResource EmptyTodo}" Margin="3,0,0,0" MyCommand="{Binding EmptyTodoCommand}" ToolTip="空のログを作成" IsEnabled="{Binding NoData}"/>
             
             <c:IconButton IconImage="{StaticResource EditTemplate}" Margin="15,0,0,0" MyCommand="{Binding EditTemplateCommand}" ToolTip="テンプレート編集"/>
             <c:IconButton IconImage="{StaticResource EditCategory}" Margin="10,0,0,0" MyCommand="{Binding EditCategoryCommand}" ToolTip="カテゴリ編集"/>
+
+            <TextBlock Width="100" />
+            <c:IconButton IconImage="{StaticResource Delete}" Margin="10,0,0,0" MyCommand="{Binding DeleteCommand}" ToolTip="ログを削除" IsEnabled="{Binding HasData}"/>
         </StackPanel>
 
         <ListView Name="cData" Grid.Row="1" Padding="0" ItemsSource="{Binding LogData.LogList}" SelectedIndex="{Binding CurrentIndex}" >

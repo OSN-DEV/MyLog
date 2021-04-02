@@ -19,5 +19,6 @@
     <BitmapImage x:Key="DeleteTodo" UriSource="DeleteTodo.png" />
     <BitmapImage x:Key="Visible" UriSource="Visible.png" />
     <BitmapImage x:Key="Invisible" UriSource="Invisible.png" />
+    <BitmapImage x:Key="SelectTemplate" UriSource="SelectTemplate.png" />
 
 </ResourceDictionary>
