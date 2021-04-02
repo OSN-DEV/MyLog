@@ -96,7 +96,7 @@ namespace MyLog.Data.Repo.Entity {
         /// <summary>
         /// 実績時間
         /// </summary>
-        internal int ActualTime { set; get; }
+        internal string ActualTime { set; get; }
 
         /// <summary>
         /// メモ

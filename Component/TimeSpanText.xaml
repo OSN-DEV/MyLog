@@ -21,7 +21,5 @@
         <TextBlock Text="-"  VerticalAlignment="Center"/>
         <c:TimeTextBox x:Name="cEnd"  Width="45" Style="{StaticResource BasicTimeTextBox}" MaxLength="4" Text="{Binding Path=EndTime, ElementName=Main}"/>
         <c:CustomTextBox x:Name="cSpan" ImeMode="Disabled" Width="30" Style="{StaticResource BaseTextBoxStyle}" Text="{Binding Path=Span, ElementName=Main}" MaxLength="3" TextAlignment="Right"/>
-
-
     </StackPanel>
 </UserControl>

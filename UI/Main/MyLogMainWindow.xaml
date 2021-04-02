@@ -7,7 +7,7 @@
         xmlns:c="clr-namespace:MyLog.Component"
         mc:Ignorable="d"
         xmlns:jas="clr-namespace:WPF.JoshSmith.ServiceProviders.UI;assembly=ListViewDragDropManager"
-        Title="自分のログ" Height="600" Width="940" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
+        Title="自分のログ" Height="600" Width="920" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
  
     <Window.Resources>
         <ResourceDictionary>
@@ -67,14 +67,17 @@
                             <c:ResultButton Width="16" Height="16" ResultStatus="{Binding Result}" Margin="1,0,0,0" Tag="{Binding Id}" ResultChanged="ResultChanged" />
                             <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Todo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" TextValueChanged="TodoTextValueChanged" Tag="{Binding Id}"/>
 
+                            <TextBlock Width="1"  Background="#EFEFEF" />
+                            
                             <c:TimeSpanText 
                                 StartTime="{Binding PlanStart, Mode=TwoWay}"
                                 EndTime="{Binding PlanEnd, Mode=TwoWay}"
                                 Span="{Binding PlanTime, Mode=TwoWay}"  Tag="{Binding Id}"
                                 TimeDataChanged="StartTime_TimeDataChanged"/>
-
-                            <TextBlock Width="8"/>
-
+                            
+                            <TextBlock Width="14"/>
+                            <TextBlock Width="1"  Background="#EFEFEF" />
+                            <TextBlock Width="14"/>
 
                             <c:TimeSpanText 
                                 StartTime="{Binding ActualStart, Mode=TwoWay}"
@@ -82,6 +85,7 @@
                                 Span="{Binding ActualTime, Mode=TwoWay}"  Tag="{Binding Id}"
                                 TimeDataChanged="EndTime_TimeDataChanged"/>
 
+                            <TextBlock Width="1"  Background="#EFEFEF" />
                             <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Memo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3" TextValueChanged="CustomTextBox_TextValueChanged"  Tag="{Binding Id}"/>
 
                             <c:IconButton IconImage="{StaticResource DeleteTodo}" Width="20" Height="20"  Margin="1,0"

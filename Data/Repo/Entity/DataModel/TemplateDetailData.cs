@@ -1,10 +1,11 @@
-﻿using System.Windows;
+﻿using MyLog.UI;
+using System.Windows;
 
 namespace MyLog.Data.Repo.Entity.DataModel {
     /// <summary>
     /// template detail data
     /// </summary>
-    public class TemplateDetailData {
+    public class TemplateDetailData :BaseBindable {
 
         #region Public Property
         /// <summary>
@@ -15,7 +16,11 @@ namespace MyLog.Data.Repo.Entity.DataModel {
         /// <summary>
         /// 並び順
         /// </summary>
-        public int Priority { set; get; }
+        private int _priority;
+        public int Priority {
+            set { base.SetProperty(ref this._priority, value); }
+            get { return this._priority; }
+        }
 
         /// <summary>
         /// Todo

@@ -5,7 +5,7 @@ namespace MyLog.UI {
     /// <summary>
     /// bindable base class
     /// </summary>
-    class BaseBindable : INotifyPropertyChanged {
+    public class BaseBindable : INotifyPropertyChanged {
 
         #region Declaration
         public event PropertyChangedEventHandler PropertyChanged;

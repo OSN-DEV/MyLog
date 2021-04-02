@@ -86,7 +86,6 @@ namespace MyLog.Data.Repo {
                     if (recset.Read()) {
                         // ヘッダ情報を取得
                         result = new TemplateData {
-                            Id = recset.GetLong(TemplateEntity.Cols.Id),
                             Name = recset.GetString(TemplateEntity.Cols.Name),
                             Sun = recset.GetBool(TemplateEntity.Cols.Sun),
                             Mon = recset.GetBool(TemplateEntity.Cols.Mon),

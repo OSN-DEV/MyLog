@@ -1,17 +1,19 @@
-﻿using System.Windows;
+﻿using MyLog.UI;
+using System.Windows;
 using static MyLog.Component.ResultButton;
 
 namespace MyLog.Data.Repo.Entity.DataModel {
     /// <summary>
     /// log detail data
     /// </summary>
-    public class LogDetailData {
+    public class LogDetailData : BaseBindable{
 
         #region Public Property
         /// <summary>
         /// id
         /// </summary>
-        public long Id { set; get; }
+        private long _id;
+        public long Id { set { base.SetProperty(ref this._id, value); } get { return this._id; } }
 
         /// <summary>
         /// ログID
@@ -26,7 +28,8 @@ namespace MyLog.Data.Repo.Entity.DataModel {
         /// <summary>
         /// 並び順
         /// </summary>
-        public int Priority { set; get; }
+        private int _priority;
+        public int Priority { set { base.SetProperty(ref this._priority, value); } get { return this._priority; } }
 
         /// <summary>
         /// 結果
@@ -66,7 +69,7 @@ namespace MyLog.Data.Repo.Entity.DataModel {
         /// <summary>
         /// 実績時間
         /// </summary>
-        public int ActualTime { set; get; }
+        public string ActualTime { set; get; }
 
         /// <summary>
         /// メモ

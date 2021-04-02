@@ -68,7 +68,7 @@ namespace MyLog.Data.Repo {
                             PlanTime = recset.GetInt(LogDetailEntity.Cols.PlanTime),
                             ActualStart = recset.GetString(LogDetailEntity.Cols.ActualStart),
                             ActualEnd = recset.GetString(LogDetailEntity.Cols.ActualEnd),
-                            ActualTime = recset.GetInt(LogDetailEntity.Cols.ActualTime),
+                            ActualTime = recset.GetInt(LogDetailEntity.Cols.ActualTime).ToString(),
                             Memo = recset.GetString(LogDetailEntity.Cols.Memo)
                         };
                         detail.Priority = recset.GetInt(LogDetailEntity.Cols.Priority);

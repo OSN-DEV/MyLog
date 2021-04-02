@@ -30,7 +30,6 @@ namespace MyLog.UI.Template {
             }
         }
 
-
         /// <summary>
         /// リスト情報
         /// </summary>
@@ -205,9 +204,9 @@ namespace MyLog.UI.Template {
             this._isNew = true;
             this._window.cTemplateName.Focus();
 
-            this.Name = "";
             var repo = new TemplateRepo();
             this.TemplateData = repo.CreateEmptyTemplate();
+            this.Name = "";
         }
 
         /// <summary>
@@ -220,13 +219,14 @@ namespace MyLog.UI.Template {
             if (true != window.ShowDialog()) {
                 return;
             }
+            this.TemplateData = null;
             this.EditMode = true;
             this._isNew = true;
             this._window.cTemplateName.Focus();
 
-            this.Name = "";
             var repo = new TemplateRepo();
             this.TemplateData = repo.SelectByTemplateId(window.SelectedTemplateId);
+            this.Name = "";
         }
 
         /// <summary>
@@ -277,6 +277,11 @@ namespace MyLog.UI.Template {
             this.EditMode = false;
             this.TemplateData = null;
             this._isNew = false;
+
+            // 既存データの場合はメモリの情報が書き換わってしまうので便宜上の対処
+            // ※データ件数が少ないので通じる手法
+            var repo = new TemplateRepo();
+            this.TemplateList = repo.Select();
         }
 
         /// <summary>
