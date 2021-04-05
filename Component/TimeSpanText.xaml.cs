@@ -20,7 +20,9 @@ namespace MyLog.Component {
                 }
                 var spanTime = 0;
                 if (0 < this.cSpan.Text.Length) {
-                    spanTime = int.Parse(this.cSpan.Text);
+                    if (!int.TryParse(this.cSpan.Text, out spanTime)) {
+                        spanTime = 0;
+                    }
                 }
                 this.TimeDataChanged?.Invoke(long.Parse(this.Tag.ToString()), this.cStart.Text, this.cEnd.Text, spanTime);
             };
