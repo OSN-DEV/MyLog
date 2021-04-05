@@ -34,8 +34,19 @@ namespace MyLog.Component {
         #endregion
 
         #region Public Event
-        public delegate void ResultChangedHandle(long id, short result);
-        public event ResultChangedHandle ResultChanged;
+        public class ResultChangedEventArgs: EventArgs {
+            public long Id { private set; get; }
+            public short Result { private set; get; }
+            public ResultChangedEventArgs(long id, short result) {
+                this.Id = id;
+                this.Result = result;
+            }
+        }
+        public EventHandler<ResultChangedEventArgs> OnResultChanged;
+        public event EventHandler<ResultChangedEventArgs> ResultChanged {
+            add { OnResultChanged += value; }
+            remove { OnResultChanged -= value; }
+        }
         #endregion
 
         #region Public Property
@@ -70,7 +81,9 @@ namespace MyLog.Component {
                     this.ResultStatus = ResultState.None;
                     break;
             }
-            this.ResultChanged(long.Parse(this.Tag.ToString()), (short)this.ResultStatus);
+
+            var args = new ResultChangedEventArgs(long.Parse(this.Tag.ToString()), (short)this.ResultStatus);
+            this.OnResultChanged?.Invoke(this, args);
         }
         #endregion
 

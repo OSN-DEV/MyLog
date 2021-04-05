@@ -44,40 +44,36 @@ namespace MyLog.UI.Main {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CustomTextBox_TextValueChanged(object sender, System.EventArgs e) {
+        private void MemoChanged(object sender, System.EventArgs e) {
             var t = sender as CustomTextBox;
             this._viewModel.MemoChanged(Obj2Long(t.Tag), t.Text);
         }
 
         /// <summary>
-        /// result 変更
+        /// 結果変更イベント
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="result"></param>
-        private void ResultChanged(long id, short result) {
-            this._viewModel.ResultChanged(id, result);
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResultChanged(object sender, ResultButton.ResultChangedEventArgs e) {
+            this._viewModel.ResultChanged(e.Id, e.Result);
         }
 
         /// <summary>
         /// 時間変更
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="span"></param>
-        private void StartTime_TimeDataChanged(long id, string start, string end, int span) {
-            this._viewModel.StartTimeChanged(id, start, end, span);
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StartTimeChanged(object sender, TimeSpanText.TimeDataChangedEventArgs e) {
+            this._viewModel.StartTimeChanged(e.Id, e.Start, e.End, e.Span);
         }
 
         /// <summary>
         /// 時間変更
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="span"></param>
-        private void EndTime_TimeDataChanged(long id, string start, string end, int span) {
-            this._viewModel.EndTimeChanged(id, start, end, span);
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EndTimeChanged(object sender, TimeSpanText.TimeDataChangedEventArgs e) {
+            this._viewModel.EndTimeChanged(e.Id, e.Start, e.End, e.Span);
         }
         #endregion
 
@@ -92,6 +88,7 @@ namespace MyLog.UI.Main {
             return long.Parse(obj.ToString());
         }
         #endregion
+
 
     }
 }

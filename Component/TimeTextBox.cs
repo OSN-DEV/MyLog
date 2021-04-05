@@ -58,8 +58,7 @@ namespace MyLog.Component {
                 return "";
             }
             var val = this.Text.PadLeft(4,'0');
-            int dummyNum;
-            if (!int.TryParse(val, out dummyNum)) {
+            if (!int.TryParse(val, out int _)) {
                 return "";
             }
             var h = int.Parse(val.Substring(0, 2));

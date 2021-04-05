@@ -223,6 +223,17 @@ namespace MyLog.UI.Main {
             var repo = new MyLogRepo();
             try {
                 repo.UpdateActualTimeById(id, start, end, span);
+                if ((0 < end.Length || 0 < span)) {
+                    foreach(var data in this.LogData.LogList) {
+                        if (data.Id == id) {
+                            if (data.Result == Component.ResultButton.ResultState.None) {
+                                data.Result = Component.ResultButton.ResultState.Done;
+                                ResultChanged(id, (int)data.Result);
+                            }
+                            break;
+                        }
+                    }
+                }
             } catch (Exception ex) {
                 Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
             }

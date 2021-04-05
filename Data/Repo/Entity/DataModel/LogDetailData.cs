@@ -34,7 +34,8 @@ namespace MyLog.Data.Repo.Entity.DataModel {
         /// <summary>
         /// 結果
         /// </summary>
-        public ResultState Result { set; get; }
+        private ResultState _resuilt;
+        public ResultState Result { set { base.SetProperty(ref this._resuilt, value); } get { return this._resuilt; } }
 
         /// <summary>
         /// Todo

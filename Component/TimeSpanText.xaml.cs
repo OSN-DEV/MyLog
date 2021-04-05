@@ -24,36 +24,52 @@ namespace MyLog.Component {
                         spanTime = 0;
                     }
                 }
-                this.TimeDataChanged?.Invoke(long.Parse(this.Tag.ToString()), this.cStart.Text, this.cEnd.Text, spanTime);
-            };
+                this.RaiseEvent(spanTime);
+           };
         }
 
         #endregion
 
         #region Event
+
         #region Public Event
-        public delegate void TimeDataChangedHandle(long id, string start, string end, int span);
-        public event TimeDataChangedHandle TimeDataChanged;
+        public class TimeDataChangedEventArgs : EventArgs {
+            public long Id { private set; get; }
+            public string Start { private set; get; }
+            public string End { private set; get; }
+            public int Span { private set; get; }
+            public TimeDataChangedEventArgs(long id, string start, string end, int span) {
+                this.Id = id;
+                this.Start = start;
+                this.End = end;
+                this.Span = span;
+            }
+        }
+        public EventHandler<TimeDataChangedEventArgs> OnTimeDataChanged;
+        public event EventHandler<TimeDataChangedEventArgs> TimeDataChanged {
+            add { OnTimeDataChanged += value; }
+            remove { OnTimeDataChanged -= value; }
+        }
         #endregion
 
         private void TimeChanged(object sender, EventArgs e) {
-            if (0 == this.cStart.Text.Length || 0 == this.cEnd.Text.Length) {
-                return;
-            }
-
-            var start = this.ConvertStr2Date(this.cStart.Text);
-            var end = this.ConvertStr2Date(this.cEnd.Text);
-            var span = end - start;
-            if (span.TotalMinutes < 0) {
-                return;
-            }
-            this.cSpan.Text = span.TotalMinutes.ToString();
-
             var spanTime = 0;
+
+            if (0 < this.cStart.Text.Length && 0 < this.cEnd.Text.Length) {
+                var start = this.ConvertStr2Date(this.cStart.Text);
+                var end = this.ConvertStr2Date(this.cEnd.Text);
+                var span = end - start;
+                if (span.TotalMinutes < 0) {
+                    return;
+                }
+                this.cSpan.Text = span.TotalMinutes.ToString();
+            }
+
+            
             if (0 < this.cSpan.Text.Length) {
                 spanTime = int.Parse(this.cSpan.Text);
             }
-            this.TimeDataChanged?.Invoke(long.Parse(this.Tag.ToString()), this.cStart.Text, this.cEnd.Text, spanTime);
+            this.RaiseEvent(spanTime);
         }
         #endregion
 
@@ -102,6 +118,16 @@ namespace MyLog.Component {
                     int.Parse(time.Replace(":","").Substring(0, 2)),
                     int.Parse(time.Replace(":", "").Substring(2, 2)),
                     0);
+        }
+
+        /// <summary>
+        /// イベントを発行する
+        /// </summary>
+        /// <param name="spanTime">時間</param>
+        private void RaiseEvent(int spanTime) {
+            var args = new TimeDataChangedEventArgs(
+                long.Parse(this.Tag.ToString()), this.cStart.Text, this.cEnd.Text, spanTime);
+            this.OnTimeDataChanged?.Invoke(this, args);
         }
         #endregion
     }

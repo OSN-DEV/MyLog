@@ -14,7 +14,7 @@ namespace MyLog.UI.Template {
     internal class TemplateViewModel : BaseBindable {
 
         #region Declaration
-        private TemplateWindow _window;
+        private readonly TemplateWindow _window;
         private bool _isNew = false;
         #endregion
 
