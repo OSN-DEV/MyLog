@@ -23,7 +23,7 @@ namespace MyLog.Data.Repo {
             LogData result = null;
             var startIndex = 0;
 
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 database.Open();
 
                 // ヘッダ情報を取得
@@ -125,7 +125,7 @@ namespace MyLog.Data.Repo {
         /// <returns>ID</returns>
         internal long InsertHeader(string recordedOn) {
             long result;
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 try {
                     database.Open();
                     database.BeginTrans();
@@ -148,9 +148,10 @@ namespace MyLog.Data.Repo {
         /// <param name="recordedOn">記録日</param>
         /// <returns>空のログデータ</returns>
         internal LogData CreateEmptyLog(string recordedOn) {
-            var result = new LogData();
-            result.LogList = new ObservableCollection<LogDetailData>();
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            var result = new LogData() {
+                LogList = new ObservableCollection<LogDetailData>()
+            };
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 try {
                     database.Open();
                     var categoryEntity = new CategoryEntity(database);
@@ -189,7 +190,7 @@ namespace MyLog.Data.Repo {
         /// <returns></returns>
         internal LogData CreateLogByRecordedOn(string recordedOn) {
             long templateId;
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 database.Open();
                 var templateEntity = new TemplateEntity(database);
                 using (var recset = templateEntity.SelectByWeekDay(recordedOn)) {
@@ -213,7 +214,7 @@ namespace MyLog.Data.Repo {
         /// <returns></returns>
         internal LogData CreateLogByTemplateId(long templateId, string recordedOn) {
 
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 database.Open();
                 try {
                     database.BeginTrans();
@@ -243,7 +244,7 @@ namespace MyLog.Data.Repo {
         /// <returns></returns>
         internal LogDetailData InsertEmptyRow(long logId, long categoryId, int order) {
             var result = new LogDetailData();
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 database.Open();
                 database.BeginTrans();
 
@@ -266,7 +267,7 @@ namespace MyLog.Data.Repo {
         /// </summary>
         /// <param name="logList">ログデータ</param>
         internal void UpdateOrderById(ObservableCollection<LogDetailData> logList) {
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 try {
                     database.Open();
                     database.BeginTrans();
@@ -370,7 +371,7 @@ namespace MyLog.Data.Repo {
         /// </summary>
         /// <param name="id">ID</param>
         internal void DeleteById(long id) {
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 try {
                     database.Open();
                     database.BeginTrans();
@@ -394,7 +395,7 @@ namespace MyLog.Data.Repo {
         /// <param name="id">ID</param>
         /// <param name="entity">エンティティ</param>
         private void UpdateLogDById(long id, LogDetailEntity entity) {
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 try {
                     database.Open();
                     database.BeginTrans();

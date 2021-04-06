@@ -39,6 +39,9 @@
             <c:IconButton IconImage="{StaticResource EditCategory}" Margin="10,0,0,0" MyCommand="{Binding EditCategoryCommand}" ToolTip="カテゴリ編集"/>
 
             <TextBlock Width="100" />
+            <c:IconButton IconImage="{StaticResource Database}" Margin="10,0,0,0" MyCommand="{Binding SelectDatabaseCommand}" ToolTip="データベースを選択"/>
+
+            <TextBlock Width="100" />
             <c:IconButton IconImage="{StaticResource Delete}" Margin="10,0,0,0" MyCommand="{Binding DeleteCommand}" ToolTip="ログを削除" IsEnabled="{Binding HasData}"/>
         </StackPanel>
 

@@ -19,7 +19,7 @@ namespace MyLog.Data.Repo {
         /// <returns>テンプレート情報</returns>
         internal ObservableCollection<TemplateData> Select() {
             var result = new ObservableCollection<TemplateData>();
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 database.Open();
 
                 // カテゴリ情報を取得
@@ -67,7 +67,7 @@ namespace MyLog.Data.Repo {
         /// <returns>テンプレート情報</returns>
         internal TemplateData SelectByTemplateId(long templateId) {
             TemplateData result = null;
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 database.Open();
 
                 // カテゴリ情報を取得
@@ -113,7 +113,7 @@ namespace MyLog.Data.Repo {
             var result = new TemplateData() {
                 LogList = new ObservableCollection<TemplateDetailData>()
             };
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 database.Open();
                 var categoryEntity = new CategoryEntity(database);
                 var categories = new Dictionary<long, string>();
@@ -140,7 +140,7 @@ namespace MyLog.Data.Repo {
         /// <param name="isNew">true:新規、false:更新</param>
         /// <remarks>新規のケースもあるのでdelete → insertで処理を行う</remarks>
         internal void Update(TemplateData data, bool isNew) {
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 try {
                     database.Open();
                     database.BeginTrans();
@@ -182,7 +182,7 @@ namespace MyLog.Data.Repo {
         /// </summary>
         /// <param name="id"></param>
         internal void DeleteByTemplateId(long id) {
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 try {
                     database.Open();
                     database.BeginTrans();

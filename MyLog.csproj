@@ -215,6 +215,7 @@
     <Resource Include="Res\BackgroundHover.png" />
     <Resource Include="Res\BackgroundPressed.png" />
     <Resource Include="Res\SelectTemplate.png" />
+    <Resource Include="Res\database.png" />
     <Content Include="x64\SQLite.Interop.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

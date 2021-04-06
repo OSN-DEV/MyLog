@@ -17,7 +17,7 @@ namespace MyLog.Data.Repo {
         /// <returns>取得結果(該当情報が存在しない場合は空のリストを返却)</returns>
         internal ObservableCollection<CategoryData> Select() {
             var result = new ObservableCollection<CategoryData>();
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 database.Open();
 
                 var entity = new CategoryEntity(database);
@@ -41,7 +41,7 @@ namespace MyLog.Data.Repo {
         /// </summary>
         /// <param name="categories">カテゴリ情報</param>
         internal void Update(ObservableCollection<CategoryData> categories) {
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 try {
                     database.Open();
                     database.BeginTrans();

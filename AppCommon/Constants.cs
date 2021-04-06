@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyLog.Data.Repo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,10 @@ namespace MyLog.AppCommon {
         /// <summary>
         /// アプリデータベース
         /// </summary>
-        public static readonly string DatabaseFile = OsnCsLib.Common.Util.GetAppPath() + @"app.data";
+        //public static readonly string DatabaseFile = AppSettingsRepo.GetInstance().DatabaseFile;
+        public static string DatabaseFile() {
+            return AppSettingsRepo.GetInstance().DatabaseFile;
+        }
 
         /// <summary>
         /// カテゴリの数

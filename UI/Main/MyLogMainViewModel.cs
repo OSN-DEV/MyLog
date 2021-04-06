@@ -1,4 +1,5 @@
-﻿using MyLog.AppCommon;
+﻿using Microsoft.Win32;
+using MyLog.AppCommon;
 using MyLog.Data.Repo;
 using MyLog.Data.Repo.Entity.DataModel;
 using MyLog.UI.Category;
@@ -68,44 +69,49 @@ namespace MyLog.UI.Main {
 
 
         /// <summary>
-        /// 前日クリック
+        /// 前日コマンド
         /// </summary>
         public DelegateCommand PrevDayCommand { set; get; }
 
         /// <summary>
-        /// 翌日クリック
+        /// 翌日コマンド
         /// </summary>
         public DelegateCommand NextDayCommand { set; get; }
 
         /// <summary>
-        /// カレンダークリック
+        /// カレンダーコマンド
         /// </summary>
         public DelegateCommand CalendarCommand { set; get; }
 
         /// <summary>
-        /// 新規TODO作成クリック
+        /// 新規TODO作成コマンド
         /// </summary>
         public DelegateCommand NewTodoCommand { set; get; }
 
         /// <summary>
-        /// テンプレートを選択してTODOを作成
+        /// テンプレートを選択してTODOを作成コマンド
         /// </summary>
         public DelegateCommand SelectTemplateCommand { set; get; }
 
         /// <summary>
-        /// 空のTODO作成クリック
+        /// 空のTODO作成コマンド
         /// </summary>
         public DelegateCommand EmptyTodoCommand { set; get; }
 
         /// <summary>
-        /// カテゴリ編集クリック
+        /// カテゴリ編集コマンド
         /// </summary>
         public DelegateCommand EditCategoryCommand { set; get; }
 
         /// <summary>
-        /// テンプレート編集クリック
+        /// テンプレート編集コマンド
         /// </summary>
         public DelegateCommand EditTemplateCommand { set; get; }
+
+        /// <summary>
+        /// データベース選択コマンド
+        /// </summary>
+        public DelegateCommand SelectDatabaseCommand { set; get; }
 
         /// <summary>
         /// 削除コマンド
@@ -351,6 +357,28 @@ namespace MyLog.UI.Main {
         }
 
         /// <summary>
+        /// データベース選択クリック時の処理
+        /// </summary>
+        private void SelectDatabaseClick() {
+            var dialog = new SaveFileDialog() {
+                FileName = "app.data",
+                Filter = "すべてのファイル|*.*|データベース ファイル|*.data",
+                FilterIndex = 2,
+                OverwritePrompt = false
+            };
+            if (true == dialog.ShowDialog()) {
+                var filename = dialog.FileName;
+                try {
+                    var repo = AppSettingsRepo.GetInstance();
+                    repo.SetDatabaseFile(filename);
+                } catch (Exception ex) {
+                    Message.ShowError(this._window, Message.ErrId.Err002, ex.Message);
+                }
+            }
+            this.ShowDataByRecordedOn();
+        }
+
+        /// <summary>
         /// Todo追加クリック時の処理
         /// </summary>
         /// <param name="categoryId">カテゴリID</param>
@@ -410,6 +438,7 @@ namespace MyLog.UI.Main {
             this.EditCategoryCommand = new DelegateCommand(EditCategoryClick, () => true);
             this.EditTemplateCommand = new DelegateCommand(EditTemplateClick, () => true);
             this.DeleteCommand = new DelegateCommand(DeleteClick, () => HasData);
+            this.SelectDatabaseCommand = new DelegateCommand(SelectDatabaseClick);
             this.AddLogCommand = new DelegateCommandWithParam<long>(AddLogClick);
             this.DeleteTodoCommand = new DelegateCommandWithParam<int>(DeleteTodoClick);
 

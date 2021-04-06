@@ -24,7 +24,7 @@ namespace MyLog.Data.Repo {
         /// <returns></returns>
         internal List<TemplateListItem> Select() {
             var result = new List<TemplateListItem>();
-            using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 database.Open();
 
                 var entity = new TemplateEntity(database);

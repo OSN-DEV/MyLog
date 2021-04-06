@@ -1,10 +1,13 @@
-﻿using OsnCsLib.Data;
+﻿using MyLog.AppCommon;
+using MyLog.Data.Repo.Entity;
+using OsnCsLib.Data;
+using System;
 
 namespace MyLog.Data.Repo {
     /// <summary>
     /// app settings repo
     /// </summary>
-    class AppSettingsRepo : AppDataBase<AppSettingsRepo> {
+    public class AppSettingsRepo : AppDataBase<AppSettingsRepo> {
 
         #region Declaration
         private static string _file;
@@ -35,6 +38,11 @@ namespace MyLog.Data.Repo {
         /// show window top
         /// </summary>
         public bool Topmost { set; get; }
+
+        /// <summary>
+        /// DatabaseFile
+        /// </summary>
+        public string DatabaseFile { set; get; } = OsnCsLib.Common.Util.GetAppPath() + @"app.data";
         #endregion
 
         #region Public Method
@@ -65,6 +73,48 @@ namespace MyLog.Data.Repo {
         /// </summary>
         public void Save() {
             GetInstanceBase().SaveToXml(_file);
+        }
+
+        /// <summary>
+        /// set database
+        /// </summary>
+        /// <param name="database"></param>
+        public void SetDatabaseFile(string database) {
+            CreateDatabase(database);
+            this.DatabaseFile = database;
+            this.Save();
+
+        }
+
+        /// <summary>
+        /// Create Database File
+        /// </summary>
+        /// <param name="file">database file</param>
+        public void CreateDatabase(string file = "") {
+            if (0 == file.Length) {
+                file = OsnCsLib.Common.Util.GetAppPath() + @"app.data";
+            }
+
+            if (!System.IO.File.Exists(file)) {
+                using (var database = new MyLogDatabase(file)) {
+                    try {
+                        database.Open();
+                        database.BeginTrans();
+
+                        new CategoryEntity(database).Create();
+                        new LogEntity(database).Create();
+                        new LogDetailEntity(database).Create();
+                        new TemplateEntity(database).Create();
+                        new TemplateDetailEntity(database).Create();
+
+                        database.CommitTrans();
+                    } catch (Exception ex) {
+                        Message.ShowError(null, Message.ErrId.Err002, ex.Message);
+                    }
+                }
+                this.DatabaseFile = file;
+                this.Save();
+            }
         }
         #endregion
 

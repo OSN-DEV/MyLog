@@ -18,25 +18,9 @@ namespace MyLog {
         #region Event
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
-            // create a database file if need
-            if (!System.IO.File.Exists(Constants.DatabaseFile)) {
-                using (var database = new MyLogDatabase(Constants.DatabaseFile)) {
-                    try {
-                        database.Open();
-                        database.BeginTrans();
 
-                        new CategoryEntity(database).Create();
-                        new LogEntity(database).Create();
-                        new LogDetailEntity(database).Create();
-                        new TemplateEntity(database).Create();
-                        new TemplateDetailEntity(database).Create();
-
-                        database.CommitTrans();
-                    } catch (Exception ex) {
-                        Message.ShowError(null, Message.ErrId.Err002, ex.Message);
-                    }
-                }
-            }
+            var settings = AppSettingsRepo.Init(Constants.SettingsFile);
+            settings.CreateDatabase();
         }
         #endregion
     }
