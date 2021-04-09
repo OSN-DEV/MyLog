@@ -125,6 +125,9 @@ namespace MyLog.Component {
         /// </summary>
         /// <param name="spanTime">時間</param>
         private void RaiseEvent(int spanTime) {
+            if (null == this.Tag || "" == this.Tag.ToString()) {
+                return;
+            }
             var args = new TimeDataChangedEventArgs(
                 long.Parse(this.Tag.ToString()), this.cStart.Text, this.cEnd.Text, spanTime);
             this.OnTimeDataChanged?.Invoke(this, args);
