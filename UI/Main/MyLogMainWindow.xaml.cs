@@ -25,6 +25,13 @@ namespace MyLog.UI.Main {
             };
             manager.IsValidItem = this._viewModel.IsValidItem;
             manager.DropDone += this._viewModel.DropDone;
+
+            var templogManager = new ListViewDragDropManager<TempLogData>(this.cTempLogData) {
+                AllowStartX = 0,
+                AllowEndX = 24
+            };
+            templogManager.IsValidItem = this._viewModel.IsValidTempItem;
+            templogManager.DropDone += this._viewModel.TempDropDone;
         }
         #endregion
 
@@ -74,6 +81,26 @@ namespace MyLog.UI.Main {
         /// <param name="e"></param>
         private void EndTimeChanged(object sender, TimeSpanText.TimeDataChangedEventArgs e) {
             this._viewModel.EndTimeChanged(e.Id, e.Start, e.End, e.Span);
+        }
+
+        /// <summary>
+        /// Todo Text Changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TempLogTextValueChanged(object sender, System.EventArgs e) {
+            var t = sender as CustomTextBox;
+            this._viewModel.TempLogChanged(Obj2Long(t.Tag), t.Text);
+        }
+
+        /// <summary>
+        /// Memo Text Changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TempLogMemoChanged(object sender, System.EventArgs e) {
+            var t = sender as CustomTextBox;
+            this._viewModel.TempLogMemoChanged(Obj2Long(t.Tag), t.Text);
         }
         #endregion
 

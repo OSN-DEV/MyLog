@@ -119,6 +119,32 @@ namespace MyLog.Data.Repo {
         }
 
         /// <summary>
+        /// テンプログを取得
+        /// </summary>
+        /// <returns>取得結果</returns>
+        internal ObservableCollection<TempLogData> SelectTempLogList() {
+            var result = new ObservableCollection<TempLogData>();
+            result.Add(new TempLogData() {
+                IsCategory = true,
+                CategoryName = "時間帯が未定のtodo"
+            });
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
+                database.Open();
+                var eneity = new TempLogEntity(database);
+                using (var recset = eneity.Select()) {
+                    while (recset.Read()) {
+                        result.Add(new TempLogData() {
+                            Id = recset.GetLong(TempLogEntity.Cols.Id),
+                            Todo = recset.GetString(TempLogEntity.Cols.Todo),
+                            Memo = recset.GetString(TempLogEntity.Cols.Memo)
+                        });
+                    }
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// ログ情報(ヘッダ)を作成する
         /// </summary>
         /// <param name="recordedOn">記録日</param>
@@ -263,6 +289,27 @@ namespace MyLog.Data.Repo {
         }
 
         /// <summary>
+        /// テンプログの空行を作成する
+        /// </summary>
+        /// <param name="order">並び順</param>
+        /// <returns></returns>
+        internal TempLogData InsertEmptyTempLogRow(int order) {
+            var result = new TempLogData();
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
+                database.Open();
+                database.BeginTrans();
+
+                var entity = new TempLogEntity(database) {
+                    Priority = order
+                };
+                result.Id = entity.Insert();
+                result.Priority = order;
+                database.CommitTrans();
+            }
+            return result;
+        }
+
+        /// <summary>
         /// IDをキーとして並び順・カテゴリIDを更新する
         /// </summary>
         /// <param name="logList">ログデータ</param>
@@ -284,6 +331,34 @@ namespace MyLog.Data.Repo {
                     }
                     database.CommitTrans();
                 }catch(Exception ex) {
+                    database.RollbackTrans();
+                    throw ex;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// IDをキーとして並び順・カテゴリIDを更新する
+        /// </summary>
+        /// <param name="logList">ログデータ</param>
+        internal void UpdateTempOrderById(ObservableCollection<LogDetailData> logList) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
+                try {
+                    database.Open();
+                    database.BeginTrans();
+                    var entity = new TempLogEntity(database);
+
+                    foreach (var data in logList) {
+                        if (data.IsCategory) {
+                            continue;
+                        }
+                        entity.ClearParams();
+                        entity.AddParams(LogDetailEntity.Cols.Priority, data.Priority);
+                        entity.UpdateById(data.Id);
+                    }
+                    database.CommitTrans();
+                } catch (Exception ex) {
                     database.RollbackTrans();
                     throw ex;
                 }
@@ -322,6 +397,17 @@ namespace MyLog.Data.Repo {
         internal void UpdateTodoById(long id, string todo) {
             var entity = new LogDetailEntity();
             entity.AddParams(LogDetailEntity.Cols.Todo, todo);
+            this.UpdateLogDById(id, entity);
+        }
+
+        /// <summary>
+        /// IDをキーとしてテンプTodoを更新する
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="todo">Todo</param>
+        internal void UpdateTempTodoById(long id, string todo) {
+            var entity = new TempLogEntity();
+            entity.AddParams(TempLogEntity.Cols.Todo, todo);
             this.UpdateLogDById(id, entity);
         }
 
@@ -367,6 +453,17 @@ namespace MyLog.Data.Repo {
         }
 
         /// <summary>
+        /// IDをキーとしてメモを更新する
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="memo">メモ</param>
+        internal void UpdateTempMemoById(long id, string memo) {
+            var entity = new TempLogEntity();
+            entity.AddParams(TempLogEntity.Cols.Memo, memo);
+            this.UpdateLogDById(id, entity);
+        }
+
+        /// <summary>
         /// IDをキーとして削除する
         /// </summary>
         /// <param name="id">ID</param>
@@ -379,6 +476,25 @@ namespace MyLog.Data.Repo {
                     eneityHeader.DeleteById(id);
                     var entityDetail = new LogDetailEntity(database);
                     entityDetail.DeleteById(id);
+                    database.CommitTrans();
+                } catch (Exception ex) {
+                    database.RollbackTrans();
+                    throw ex;
+                }
+            }
+        }
+
+        /// <summary>
+        /// IDをキーとして削除する
+        /// </summary>
+        /// <param name="id">ID</param>
+        internal void DeleteTempLogById(long id) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
+                try {
+                    database.Open();
+                    database.BeginTrans();
+                    var entity = new TempLogEntity(database);
+                    entity.DeleteById(id);
                     database.CommitTrans();
                 } catch (Exception ex) {
                     database.RollbackTrans();
@@ -403,6 +519,26 @@ namespace MyLog.Data.Repo {
                     entity.UpdateById(id);
                     database.CommitTrans();
                 } catch(Exception ex) {
+                    database.RollbackTrans();
+                    throw ex;
+                }
+            }
+        }
+
+        /// <summary>
+        /// IDをキーとしてテンプログを更新する
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="entity">エンティティ</param>
+        private void UpdateLogDById(long id, TempLogEntity entity) {
+            using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
+                try {
+                    database.Open();
+                    database.BeginTrans();
+                    entity.Database = database;
+                    entity.UpdateById(id);
+                    database.CommitTrans();
+                } catch (Exception ex) {
                     database.RollbackTrans();
                     throw ex;
                 }

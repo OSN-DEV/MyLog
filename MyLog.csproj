@@ -108,12 +108,14 @@
     <Compile Include="Data\Repo\Entity\DataModel\LogData.cs" />
     <Compile Include="Data\Repo\Entity\DataModel\CategoryData.cs" />
     <Compile Include="Data\Repo\Entity\DataModel\TemplateListItem.cs" />
+    <Compile Include="Data\Repo\Entity\DataModel\TempLogData.cs" />
     <Compile Include="Data\Repo\Entity\TemplateDetailEntity.cs" />
     <Compile Include="Data\Repo\Entity\TemplateEntity.cs" />
     <Compile Include="Data\Repo\Entity\LogDetailEntity.cs" />
     <Compile Include="Data\Repo\Entity\LogEntity.cs" />
     <Compile Include="Data\Repo\Entity\MyLogDatabase.cs" />
     <Compile Include="Data\Repo\Entity\CategoryEntity.cs" />
+    <Compile Include="Data\Repo\Entity\TempLogEntity.cs" />
     <Compile Include="Data\Repo\TemplateRepo.cs" />
     <Compile Include="Data\Repo\MyLogRepo.cs" />
     <Compile Include="Data\Repo\BaseRepo.cs" />

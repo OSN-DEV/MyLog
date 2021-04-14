@@ -22,6 +22,5 @@ namespace MyLog.Data.Repo.Entity.DataModel {
         /// </summary>
         public ObservableCollection<LogDetailData> LogList { set; get; }
         #endregion
-
     }
 }

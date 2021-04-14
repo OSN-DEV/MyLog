@@ -6,6 +6,7 @@ using MyLog.UI.Category;
 using MyLog.UI.Template;
 using MyLog.UI.TemplateSelect;
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace MyLog.UI.Main {
@@ -54,6 +55,11 @@ namespace MyLog.UI.Main {
         }
 
         /// <summary>
+        /// テンプログ情報
+        /// </summary>
+        public ObservableCollection<TempLogData> TempLogList { set; get; }
+
+        /// <summary>
         /// 該当日のログデータ有無
         /// </summary>
         public bool NoData {
@@ -66,7 +72,6 @@ namespace MyLog.UI.Main {
         public bool HasData {
             get { return this.LogData != null; }
         }
-
 
         /// <summary>
         /// 前日コマンド
@@ -127,6 +132,16 @@ namespace MyLog.UI.Main {
         /// Todo削除コマンド
         /// </summary>
         public DelegateCommandWithParam<int> DeleteTodoCommand { set; get; }
+
+        /// <summary>
+        /// 一時ログ追加コマンド
+        /// </summary>
+        public DelegateCommand AddTempLogCommand { set; get; }
+
+        /// <summary>
+        /// 一時ログ削除コマンド
+        /// </summary>
+        public DelegateCommandWithParam<int>  DeleteTempLogCommand { set; get; }
         #endregion
 
         #region Constructor
@@ -156,6 +171,29 @@ namespace MyLog.UI.Main {
         public void DropDone(int newIndex) {
             this.LogData.LogList[newIndex].CategoryId = this.LogData.LogList[newIndex - 1].CategoryId;
             this.SetPriority();
+        }
+
+        /// <summary>
+        /// インデックスのアイテムがドラッグ可能か判定
+        /// </summary>
+        /// <param name="index">リストのインデックス</param>
+        /// <returns>true:可能、false:それ以外</returns>
+        public bool IsValidTempItem(int index) {
+            if (index < 0) {
+                return false;
+            }
+            return !this.LogData.LogList[index].IsCategory;
+        }
+
+        /// <summary>
+        /// ドロップイベント
+        /// </summary>
+        public void TempDropDone(int newIndex) {
+            foreach (var (log, index) in this.TempLogList.Select((log, index) => (log, index))) {
+                log.Priority = index;
+            }
+            var repo = new MyLogRepo();
+            repo.UpdateTempOrderById(this.LogData.LogList);
         }
         #endregion
 
@@ -240,6 +278,34 @@ namespace MyLog.UI.Main {
                         }
                     }
                 }
+            } catch (Exception ex) {
+                Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// テンプログ変更 イベント
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="todo"></param>
+        public void TempLogChanged(long id, string todo) {
+            var repo = new MyLogRepo();
+            try {
+                repo.UpdateTempTodoById(id, todo);
+            } catch (Exception ex) {
+                Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// テンプログメモ変更 イベント
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="memo"></param>
+        public void TempLogMemoChanged(long id, string memo) {
+            var repo = new MyLogRepo();
+            try {
+                repo.UpdateTempMemoById(id, memo);
             } catch (Exception ex) {
                 Message.ShowError(this._window, Message.ErrId.Err003, ex.Message);
             }
@@ -421,6 +487,31 @@ namespace MyLog.UI.Main {
                 }
             }
         }
+
+        /// <summary>
+        /// 一時ログ追加クリック
+        /// </summary>
+        private void AddTempLogClick() {
+            var repo = new MyLogRepo();
+            var data = repo.InsertEmptyTempLogRow(this.TempLogList.Count);
+            this.TempLogList.Add(data);
+        }
+
+        /// <summary>
+        /// 一時ログ削除クリック
+        /// </summary>
+        /// <param name="priority"></param>
+        private void DeleteTempLogClick(int priority) {
+            // Priorityは一意なので
+            foreach (var (log, index) in this.TempLogList.Select((log, index) => (log, index))) {
+                if (priority == log.Priority) {
+                    var repo = new MyLogRepo();
+                    repo.DeleteTempLogById(log.Id);
+                    this.TempLogList.Remove(log);
+                    return;
+                }
+            }
+        }
         #endregion
 
         #region Private Method
@@ -441,10 +532,14 @@ namespace MyLog.UI.Main {
             this.SelectDatabaseCommand = new DelegateCommand(SelectDatabaseClick);
             this.AddLogCommand = new DelegateCommandWithParam<long>(AddLogClick);
             this.DeleteTodoCommand = new DelegateCommandWithParam<int>(DeleteTodoClick);
+            this.AddTempLogCommand = new DelegateCommand(AddTempLogClick);
+            this.DeleteTempLogCommand = new DelegateCommandWithParam<int>(DeleteTempLogClick);
 
             // 初期データを表示
             this.RecordedOn = DateTime.Now.ToString(DateFormat);
             this.ShowDataByRecordedOn();
+            var repo = new MyLogRepo();
+            this.TempLogList = repo.SelectTempLogList();
         }
 
         /// <summary>

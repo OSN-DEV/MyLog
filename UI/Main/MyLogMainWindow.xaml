@@ -7,7 +7,7 @@
         xmlns:c="clr-namespace:MyLog.Component"
         mc:Ignorable="d"
         xmlns:jas="clr-namespace:WPF.JoshSmith.ServiceProviders.UI;assembly=ListViewDragDropManager"
-        Title="自分のログ" Height="600" Width="920" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
+        Title="自分のログ" Height="750" Width="920" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
  
     <Window.Resources>
         <ResourceDictionary>
@@ -23,6 +23,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition />
+            <RowDefinition Height="170"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -45,7 +46,7 @@
             <c:IconButton IconImage="{StaticResource Delete}" Margin="10,0,0,0" MyCommand="{Binding DeleteCommand}" ToolTip="ログを削除" IsEnabled="{Binding HasData}"/>
         </StackPanel>
 
-        <ListView Name="cData" Grid.Row="1" Padding="0" ItemsSource="{Binding LogData.LogList}" SelectedIndex="{Binding CurrentIndex}" >
+        <ListView Name="cData" Grid.Row="1" Padding="0" ItemsSource="{Binding LogData.LogList}" SelectedIndex="{Binding CurrentIndex}" Margin="0,0,0,5" >
             
             <ListView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource listBoxItemStyle}" TargetType="ListBoxItem" />
@@ -100,5 +101,45 @@
             </ListView.ItemTemplate>
 
         </ListView>
+
+
+
+        <ListView Name="cTempLogData" Grid.Row="2" Padding="0" ItemsSource="{Binding TempLogList}" >
+
+            <ListView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource listBoxItemStyle}" TargetType="ListBoxItem" />
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Grid Height="30" HorizontalAlignment="Stretch"  Background="#795548" Visibility="{Binding CategoryVisibility}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="25" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Foreground="White" Text="{Binding CategoryName}" Style="{StaticResource BasicTextBlock}" Margin="10,0,0,0" />
+
+                            <c:IconButton IconImage="{StaticResource Add}" Width="20" Height="20" HorizontalAlignment="Right"
+                                        MyCommand="{Binding DataContext.AddTempLogCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        MyCommandParam ="{Binding CategoryId}"/>
+                        </Grid>
+
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding LogVisibility}">
+                            <TextBlock Width="16" Cursor="Hand"/>
+                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Todo}" Width="400" Style="{StaticResource BaseTextBoxStyle}" TextValueChanged="TempLogTextValueChanged" Tag="{Binding Id}"/>
+                            <TextBlock Width="1"  Background="#EFEFEF" />
+                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Memo}" Width="405" Style="{StaticResource BaseTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3" TextValueChanged="TempLogMemoChanged"  Tag="{Binding Id}"/>
+
+                            <c:IconButton IconImage="{StaticResource DeleteTodo}" Width="20" Height="20"  Margin="1,0"
+                                          MyCommand="{Binding DataContext.DeleteTempLogCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                          MyCommandParam ="{Binding Priority}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
     </Grid>
 </Window>
