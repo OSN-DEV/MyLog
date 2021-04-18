@@ -262,6 +262,9 @@ namespace MyLog.UI.Template {
                 if (this._isNew) {
                     this.TemplateList.Add(this.TemplateData);
                 }
+
+                this.TemplateList = new ObservableCollection<TemplateData>(this.TemplateList.OrderBy(n => n.Name));
+
                 this.CreateTemplateNameList();
                 this.ClearClick();
             } catch(Exception ex) {
