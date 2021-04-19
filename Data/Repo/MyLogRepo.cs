@@ -342,7 +342,7 @@ namespace MyLog.Data.Repo {
         /// IDをキーとして並び順・カテゴリIDを更新する
         /// </summary>
         /// <param name="logList">ログデータ</param>
-        internal void UpdateTempOrderById(ObservableCollection<LogDetailData> logList) {
+        internal void UpdateTempOrderById(ObservableCollection<TempLogData> logList) {
             using (var database = new MyLogDatabase(Constants.DatabaseFile())) {
                 try {
                     database.Open();

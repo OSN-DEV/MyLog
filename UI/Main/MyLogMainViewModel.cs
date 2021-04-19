@@ -182,7 +182,7 @@ namespace MyLog.UI.Main {
             if (index < 0) {
                 return false;
             }
-            return !this.LogData.LogList[index].IsCategory;
+            return !this.TempLogList[index].IsCategory;
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace MyLog.UI.Main {
                 log.Priority = index;
             }
             var repo = new MyLogRepo();
-            repo.UpdateTempOrderById(this.LogData.LogList);
+            repo.UpdateTempOrderById(this.TempLogList);
         }
         #endregion
 
@@ -479,6 +479,9 @@ namespace MyLog.UI.Main {
         private void DeleteTodoClick(int priority) {
             // Priorityは一意なので
             foreach (var (log, index) in this.LogData.LogList.Select((log, index) => (log, index))) {
+                if (log.IsCategory) {
+                    continue;
+                }
                 if (priority == log.Priority) {
                     var repo = new MyLogRepo();
                     repo.DeleteById(log.Id);
@@ -504,6 +507,9 @@ namespace MyLog.UI.Main {
         private void DeleteTempLogClick(int priority) {
             // Priorityは一意なので
             foreach (var (log, index) in this.TempLogList.Select((log, index) => (log, index))) {
+                if (log.IsCategory) {
+                    continue;
+                }
                 if (priority == log.Priority) {
                     var repo = new MyLogRepo();
                     repo.DeleteTempLogById(log.Id);
