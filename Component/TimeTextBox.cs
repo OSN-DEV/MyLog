@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OsnCsLib.Common;
+using System;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -42,6 +43,16 @@ namespace MyLog.Component {
                 if (0 == this.Text.Length) {
                     this.Text = DateTime.Now.ToString("HHmm");
                     this.TextValueChanged?.Invoke(this, null);
+                }
+            };
+
+            this.KeyDown += (sender, e) => {
+                if (e.Key == System.Windows.Input.Key.D) {
+                    if (Util.IsModifierPressed(System.Windows.Input.ModifierKeys.Control)) {
+                        e.Handled = true;
+                        this.Text = DateTime.Now.ToString("HHmm");
+                        this.TextValueChanged?.Invoke(this, null);
+                    }
                 }
             };
         }

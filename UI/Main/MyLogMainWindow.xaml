@@ -27,7 +27,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <c:IconButton IconImage="{StaticResource PrevDay}" MyCommand="{Binding PrevDayCommand}"/>
+            <c:IconButton IconImage="{StaticResource PrevDay}" MyCommand="{Binding PrevDayCommand}" IsTabStop="False"/>
             <TextBlock Text="{Binding RecordedOn}"  VerticalAlignment="Center" Padding="2,0"/>
             <c:IconButton IconImage="{StaticResource NextDay}" MyCommand="{Binding NextDayCommand}"/>
             <c:IconButton IconImage="{StaticResource Calendar}" Margin="5,0,0,0" MyCommand="{Binding CalendarCommand}"/>
@@ -43,7 +43,7 @@
             <c:IconButton IconImage="{StaticResource Database}" Margin="10,0,0,0" MyCommand="{Binding SelectDatabaseCommand}" ToolTip="データベースを選択"/>
 
             <TextBlock Width="100" />
-            <c:IconButton IconImage="{StaticResource Delete}" Margin="10,0,0,0" MyCommand="{Binding DeleteCommand}" ToolTip="ログを削除" IsEnabled="{Binding HasData}"/>
+            <c:IconButton IconImage="{StaticResource Delete}" Margin="10,0,0,0" MyCommand="{Binding DeleteCommand}" ToolTip="ログを削除" IsEnabled="{Binding HasData}" IsTabStop="False"/>
         </StackPanel>
 
         <ListView Name="cData" Grid.Row="1" Padding="0" ItemsSource="{Binding LogData.LogList}" SelectedIndex="{Binding CurrentIndex}" Margin="0,0,0,5" >
