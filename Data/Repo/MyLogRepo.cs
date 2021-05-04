@@ -135,6 +135,7 @@ namespace MyLog.Data.Repo {
                     while (recset.Read()) {
                         result.Add(new TempLogData() {
                             Id = recset.GetLong(TempLogEntity.Cols.Id),
+                            Priority = recset.GetInt(TempLogEntity.Cols.Priority),
                             Todo = recset.GetString(TempLogEntity.Cols.Todo),
                             Memo = recset.GetString(TempLogEntity.Cols.Memo)
                         });

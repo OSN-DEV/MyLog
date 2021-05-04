@@ -151,7 +151,6 @@ namespace MyLog.UI.Main {
         }
         #endregion
 
-
         #region Public Method
         /// <summary>
         /// インデックスのアイテムがドラッグ可能か判定
