@@ -2,6 +2,7 @@
 using MyLog.Data.Repo.Entity;
 using OsnCsLib.Data;
 using System;
+using System.IO;
 
 namespace MyLog.Data.Repo {
     /// <summary>
@@ -95,7 +96,9 @@ namespace MyLog.Data.Repo {
                 file = OsnCsLib.Common.Util.GetAppPath() + @"app.data";
             }
 
-            if (!System.IO.File.Exists(file)) {
+            if (System.IO.File.Exists(file)) {
+                this.BackupData(file);
+            } else {
                 using (var database = new MyLogDatabase(file)) {
                     try {
                         database.Open();
@@ -118,5 +121,30 @@ namespace MyLog.Data.Repo {
         }
         #endregion
 
+        #region Private Method
+        /// <summary>
+        /// バックアップ処理
+        /// </summary>
+        /// <param name="file"></param>
+        private void BackupData(string file) {
+            var root = new DirectoryInfo(file);
+            var backupDir =$@"{root.Parent.FullName}\.logdatabackup";
+            if (!Directory.Exists(backupDir)) {
+                Directory.CreateDirectory(backupDir);
+            }
+            var backup = System.DateTime.Now.ToString("yyyyMMdd");
+            if (File.Exists($@"{backupDir}\{backup}")) {
+                return;
+            }
+            File.Copy(file, $@"{backupDir}\{backup}");
+            var files = Directory.GetFiles(backupDir);
+            var baseDate = System.DateTime.Now.AddDays(-7).ToString("yyyyMMdd");
+            foreach(var f in files) {
+                if (new FileInfo(f).Name.CompareTo(baseDate) <= 0) {
+                    File.Delete(f);
+                }
+            }
+        }
+        #endregion
     }
 }
