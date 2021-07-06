@@ -113,7 +113,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <Grid Height="30" HorizontalAlignment="Stretch"  Background="#795548" Visibility="{Binding CategoryVisibility}" >
+                        <Grid Height="30" HorizontalAlignment="Stretch"  Background="#FF3BC15A" Visibility="{Binding CategoryVisibility}" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="25" />
