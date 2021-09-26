@@ -7,7 +7,7 @@
         xmlns:c="clr-namespace:MyLog.Component"
         mc:Ignorable="d"
         xmlns:jas="clr-namespace:WPF.JoshSmith.ServiceProviders.UI;assembly=ListViewDragDropManager"
-        Title="自分のログ" Height="750" Width="920" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
+        Title="自分のログ" Height="750" Width="1100" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
  
     <Window.Resources>
         <ResourceDictionary>
@@ -90,7 +90,7 @@
                                 TimeDataChanged="EndTimeChanged"/>
 
                             <TextBlock Width="1"  Background="#EFEFEF" />
-                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Memo}" Width="240" Style="{StaticResource BaseTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3" TextValueChanged="MemoChanged"  Tag="{Binding Id}"/>
+                            <c:CustomTextBox ImeMode="Hiragana" Text="{Binding Memo}" Width="420" Style="{StaticResource BaseTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3" TextValueChanged="MemoChanged"  Tag="{Binding Id}"/>
 
                             <c:IconButton IconImage="{StaticResource DeleteTodo}" Width="20" Height="20"  Margin="1,0"
                                           MyCommand="{Binding DataContext.DeleteTodoCommand, RelativeSource={RelativeSource AncestorType=Window}}"
