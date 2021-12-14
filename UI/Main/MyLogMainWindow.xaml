@@ -7,7 +7,7 @@
         xmlns:c="clr-namespace:MyLog.Component"
         mc:Ignorable="d"
         xmlns:jas="clr-namespace:WPF.JoshSmith.ServiceProviders.UI;assembly=ListViewDragDropManager"
-        Title="自分のログ" Height="750" Width="1100" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
+        Title="自分のログ" Height="750" Width="1100" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" >
  
     <Window.Resources>
         <ResourceDictionary>
