@@ -37,6 +37,20 @@ namespace MyLog.UI.Main {
 
         #region Event
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+            switch(e.Key) {
+                case System.Windows.Input.Key.Escape:
+                    e.Handled = true;
+                    this.WindowState = WindowState.Minimized;
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Todo Text Changed
         /// </summary>
         /// <param name="sender"></param>
@@ -114,8 +128,8 @@ namespace MyLog.UI.Main {
         private long Obj2Long(object obj) {
             return long.Parse(obj.ToString());
         }
-        #endregion
 
+        #endregion
 
     }
 }
